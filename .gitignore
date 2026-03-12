@@ -1,0 +1,27 @@
+# Environment
+.venv/
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Data (generated — not committed)
+data/baseline/*.csv
+data/perturbations/*.csv
+results/raw/*.csv
+results/figures/*.png
+results/figures/*.csv
+
+# OS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
