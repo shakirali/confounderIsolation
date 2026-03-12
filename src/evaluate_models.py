@@ -6,6 +6,8 @@ load_dotenv()
 
 MODEL_CONFIG = {
     "llama3.1:8b": {"backend": "ollama"},
+    "qwen3:4b": {"backend": "ollama"},
+    "gemma3:latest": {"backend": "ollama"},
     "meta-llama/Llama-3.1-8B-Instruct-Turbo": {"backend": "together"},
     "meta-llama/Llama-3.1-70B-Instruct-Turbo": {"backend": "together"},
 }
