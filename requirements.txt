@@ -1,0 +1,12 @@
+datasets
+openai
+together
+pandas
+numpy
+scipy
+scikit-learn
+matplotlib
+seaborn
+jupyter
+python-dotenv
+tqdm
