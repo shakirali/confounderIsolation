@@ -2,8 +2,8 @@ import pandas as pd
 from evaluate_models import query_model
 from tqdm import tqdm
 
-MODEL = "qwen3:4b"
-N = 5
+MODEL = "llama3.1:8b"
+N = 50
 
 
 def run_smoke_test():
