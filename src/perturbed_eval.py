@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 from tqdm import tqdm
 from evaluate_models import query_model
@@ -37,7 +38,8 @@ def run_perturbed_eval():
             })
 
     results_df = pd.DataFrame(results)
-    results_df.to_csv("data/baseline/responses_perturbed_eval.csv", index=False)
+    os.makedirs("results/raw", exist_ok=True)
+    results_df.to_csv("results/raw/responses_perturbed_eval.csv", index=False)
 
     print("\n--- Results vs Baseline (98%) ---")
     summary = results_df.groupby("perturbation_type")["score"].mean().sort_values()

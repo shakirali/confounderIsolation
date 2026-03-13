@@ -38,7 +38,8 @@ def score_csv(input_path: str, output_path: str):
 
 
 if __name__ == "__main__":
+    os.makedirs("results/raw", exist_ok=True)
     score_csv(
         input_path="data/baseline/responses_smoke_test.csv",
-        output_path="data/baseline/responses_smoke_test_scored.csv",
+        output_path="results/raw/responses_smoke_test_scored.csv",
     )
