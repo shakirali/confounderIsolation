@@ -46,7 +46,7 @@ def run_perturbed_smoke_test(
     print(f"Perturbed smoke test: {len(df)} rows ({n} questions × {df['perturbation_type'].nunique()} perturbation types)")
 
     prompts = df["prompt_sent"].tolist()
-    system_prompts = df["system_prompt"].where(df["system_prompt"].notna(), None).tolist()
+    system_prompts = [s if pd.notna(s) else None for s in df["system_prompt"].tolist()]
 
     if eval_batch_id:
         print(f"Downloading eval results from existing batch: {eval_batch_id}")

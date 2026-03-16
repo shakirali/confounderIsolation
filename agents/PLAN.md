@@ -133,16 +133,18 @@ def p5_fewshot(question: str) -> str:
 
 ---
 
-## Phase 3: Model Evaluations ⏳ IN PROGRESS
+## Phase 3: Model Evaluations ✅ SMOKE TEST DONE
 
 **Goal:** Query all models on all perturbation variants and score responses via Doubleword batch.
 
 ### Tasks
 
-**Perturbed smoke test (Doubleword)** — ⏳ TODO
-- `src/doubledword/perturbed_eval_smoke_test.py --n 100` — submit first 100 questions × 4 perturbation types
-- Results written to `results/raw/responses_perturbed_smoke_test_doubleword.csv`
-- Note: a prior run exists at `experiments/results/raw/responses_perturbed_eval.csv` but was generated with the old `llama3.1:8b` pipeline — disregard
+**Perturbed smoke test (Doubleword)** — ✅ DONE
+- Eval batch ID: `d0e2582b-8945-43e8-b538-bd7a2eedc8e0` (400 rows, 100 questions × 4 perturbation types)
+- Judge batch ID: `f1b238d5-6a1c-41d5-a58a-b2d481c84138`
+- Fix applied: `system_prompts` NaN → None conversion (was causing invalid JSON)
+- Results: `experiments/results/raw/perturbed_scored.csv`, mean score = 1.0 (all perturbation types)
+- Note: 1.0 score across all types warrants investigation — judge may be too lenient
 
 **Full evaluation** — ⏳ TODO
 
