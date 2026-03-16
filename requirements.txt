@@ -1,6 +1,7 @@
 datasets
 openai
 together
+requests
 pandas
 numpy
 scipy
