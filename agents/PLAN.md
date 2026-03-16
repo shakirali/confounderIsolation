@@ -54,7 +54,7 @@ question_id | question | perturbation_type | prompt_sent | model | response | sc
 
 ---
 
-## Phase 1: Setup and Baseline ⏳ SCORING PENDING
+## Phase 1: Setup and Baseline ✅ DONE
 
 **Goal:** Baseline scores for all models on unperturbed TruthfulQA via Doubleword batch.
 
@@ -80,8 +80,10 @@ uv pip install -r requirements.txt
 - Previous batch ID: `de13e55e-644e-420c-ae43-984a7a2214eb` — discard, used `max_tokens=1024`
 - New batch ID: `50230d22-2fdd-4cf8-946d-913b6a68bac8` (eval, `max_tokens=4096`)
 
+- Judge batch ID: `b28d872e-6109-4b93-bd78-037f43ed8019`
+
 ### Deliverable ✅
-`experiments/results/raw/responses_smoke_test_doubleword_v2.csv` — 100 questions, perturbation_type = `baseline`. Scoring pending.
+`experiments/results/raw/baseline_scored.csv` — 100 questions, perturbation_type = `baseline`, mean score = 1.0.
 
 ---
 
