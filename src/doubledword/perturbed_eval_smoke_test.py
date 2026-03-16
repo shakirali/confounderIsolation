@@ -1,16 +1,16 @@
 """
 Perturbed smoke test via the Doubleword Batch API.
 
-Evaluates the first N questions across all perturbation types. Results are saved
-to results/raw/. Score responses separately using judge_doubleword.py.
+Evaluates the first N questions across all perturbation types. Batch input and
+output are saved to experiments/doubleword_batches/<batch_id>_eval/.
+Score responses separately using judge_doubleword.py.
 
 Usage:
-    python src/doubledword/perturbed_smoke_test.py
-    python src/doubledword/perturbed_smoke_test.py --n 50 --batch-id <id>
+    python src/doubledword/perturbed_eval_smoke_test.py
+    python src/doubledword/perturbed_eval_smoke_test.py --n 100 --batch-id <id>
 """
 
 import argparse
-import os
 
 import pandas as pd
 from dotenv import load_dotenv
@@ -24,18 +24,19 @@ def run_perturbed_smoke_test(
     eval_model: str = DEFAULT_MODEL,
     n: int = 100,
     input_path: str = "data/perturbations/truthfulqa_perturbed.csv",
-    output_path: str = "results/raw/responses_perturbed_smoke_test_doubleword.csv",
     completion_window: str = DEFAULT_COMPLETION_WINDOW,
     eval_batch_id: str | None = None,
 ):
     """
     Smoke test: evaluate the first N questions (all perturbation types) via Doubleword batch.
 
+    Batch input/output JSONL saved to experiments/doubleword_batches/<batch_id>_eval/.
+    Run judge_doubleword.py on the output to produce scored results.
+
     Args:
         eval_model: Model to evaluate.
         n: Number of unique questions (default 100). Total rows = n × perturbation types.
         input_path: Perturbed prompts CSV.
-        output_path: Output CSV path.
         completion_window: "24h" or "1h".
         eval_batch_id: If provided, skip eval submission and download from this completed batch ID.
     """
@@ -49,23 +50,22 @@ def run_perturbed_smoke_test(
 
     if eval_batch_id:
         print(f"Downloading eval results from existing batch: {eval_batch_id}")
-        responses = download_results(eval_batch_id, len(df), label="eval")
+        download_results(eval_batch_id, len(df), label="eval")
     else:
         print(f"Querying eval model: {eval_model}")
-        responses = submit_batch(
+        submit_batch(
             prompts,
             model=eval_model,
             system_prompts=system_prompts,
             completion_window=completion_window,
             label="eval",
         )
-    df["model"] = eval_model
-    df["response"] = responses
 
-    os.makedirs(os.path.dirname(output_path), exist_ok=True)
-    df.to_csv(output_path, index=False)
-    print(f"\nSaved {len(df)} responses → {output_path}")
-    print("Score with: python src/doubledword/judge_doubleword.py --input <output_path> --output <scored_path>")
+    print("\nBatch complete. Score with:")
+    print("  PYTHONPATH=src/doubledword python src/doubledword/judge_doubleword.py \\")
+    print("    --eval-input-jsonl experiments/doubleword_batches/<batch_id>_eval/input.jsonl \\")
+    print("    --eval-output-jsonl experiments/doubleword_batches/<batch_id>_eval/output.jsonl \\")
+    print("    --output experiments/results/raw/<scored_output>.csv")
 
 
 if __name__ == "__main__":

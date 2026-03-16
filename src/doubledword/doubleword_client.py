@@ -43,7 +43,7 @@ def get_client() -> OpenAI:
 
 def batch_dir(batch_id: str, label: str) -> str:
     """Return the local directory path for a batch, matching existing dirs by batch_id prefix."""
-    base = os.path.join("data", "doubleword_batches")
+    base = os.path.join("experiments", "doubleword_batches")
     if os.path.isdir(base):
         for entry in os.listdir(base):
             if entry.startswith(batch_id):

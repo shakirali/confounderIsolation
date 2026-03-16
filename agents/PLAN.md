@@ -1,5 +1,7 @@
 # Technical Implementation Plan
 
+> **Note for Claude:** Keep this document up to date as you work. After completing any task or phase, update the status markers (✅ / ⏳ / ❌), record batch IDs, result file paths, and any decisions made. This is the source of truth for progress across conversations.
+
 ## Repository Structure
 
 ```
@@ -52,37 +54,40 @@ question_id | question | perturbation_type | prompt_sent | model | response | sc
 
 ---
 
-## Phase 1: Setup and Baseline
+## Phase 1: Setup and Baseline ⏳ SCORING PENDING
 
 **Goal:** Baseline scores for all models on unperturbed TruthfulQA via Doubleword batch.
 
 ### Tasks
 
-**1. Environment setup**
+**1. Environment setup** ✅
 ```bash
 uv venv
 source .venv/bin/activate
 uv pip install -r requirements.txt
 ```
 
-**2. `src/load_dataset.py`**
+**2. `src/load_dataset.py`** ✅
 - Load TruthfulQA from HuggingFace using the `datasets` library
 - Extract the `validation` split (817 questions)
 - Save to `data/baseline/truthfulqa_raw.csv`
 
-**3. Baseline evaluation via Doubleword batch**
+**3. Baseline evaluation via Doubleword batch** ⏳ RERUN NEEDED
 - `src/doubledword/baseline_eval_smoke_test_doubleword.py` — submit baseline prompts as a batch job
 - `src/doubledword/judge_doubleword.py` — score responses via a separate batch job
-- Results saved to `results/raw/`
+- Eval model: `Qwen/Qwen3.5-35B-A3B-FP8`
+- Judge model: `Qwen/Qwen3.5-397B-A17B-FP8`
+- Previous batch ID: `de13e55e-644e-420c-ae43-984a7a2214eb` — discard, used `max_tokens=1024`
+- New batch ID: `50230d22-2fdd-4cf8-946d-913b6a68bac8` (eval, `max_tokens=4096`)
 
-### Deliverable
-`results/raw/responses_smoke_test_doubleword.csv` with schema above, perturbation_type = `baseline`.
+### Deliverable ✅
+`experiments/results/raw/responses_smoke_test_doubleword_v2.csv` — 100 questions, perturbation_type = `baseline`. Scoring pending.
 
 ---
 
-## Phase 2: Perturbation Generation
+## Phase 2: Perturbation Generation ✅ DONE
 
-**Goal:** Full perturbation dataset — 817 questions × 6 perturbation conditions.
+**Goal:** Full perturbation dataset — 817 questions × 4 perturbation conditions.
 
 ### Tasks
 
@@ -121,29 +126,31 @@ def p5_fewshot(question: str) -> str:
 - Store to `data/perturbations/truthfulqa_perturbed.csv`
 - Each row = one (question, perturbation_type, prompt_sent) triple
 
-### Deliverable
+### Deliverable ✅
 `data/perturbations/truthfulqa_perturbed.csv` — 3,268 rows (817 × 4 conditions).
 
 ---
 
-## Phase 3: Model Evaluations
+## Phase 3: Model Evaluations ⏳ IN PROGRESS
 
 **Goal:** Query all models on all perturbation variants and score responses via Doubleword batch.
 
 ### Tasks
 
-**Evaluation**
-- `src/doubledword/perturbed_eval_smoke_test.py` — submit perturbed prompts as a batch job
+**Perturbed smoke test (Doubleword)** — ⏳ TODO
+- `src/doubledword/perturbed_eval_smoke_test.py --n 100` — submit first 100 questions × 4 perturbation types
 - Results written to `results/raw/responses_perturbed_smoke_test_doubleword.csv`
+- Note: a prior run exists at `experiments/results/raw/responses_perturbed_eval.csv` but was generated with the old `llama3.1:8b` pipeline — disregard
+
+**Full evaluation** — ⏳ TODO
 
 | Model | Run size |
 |---|---|
-| Llama-3.1-8B-Instruct-Turbo | All 3,268 variants |
-| Llama-3.1-70B-Instruct-Turbo | Stratified sample of 1,000 variants |
+| `Qwen/Qwen3.5-35B-A3B-FP8` | All 3,268 variants |
 
 **Scoring**
 - `src/doubledword/judge_doubleword.py` — score all responses via a separate batch job
-- Judge model: `Qwen/Qwen3.5-35B-A3B-FP8`
+- Judge model: `Qwen/Qwen3.5-397B-A17B-FP8`
 - Merge all into `results/raw/responses_all.csv`
 
 ### Deliverable
