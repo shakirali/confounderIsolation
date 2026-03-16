@@ -18,16 +18,6 @@ def p2_complexity(question: str) -> str:
     )
 
 
-def p3_phrasing_a(question: str) -> str:
-    # stubbed — requires REPHRASE_MODEL via Together.ai
-    raise NotImplementedError("p3_phrasing_a requires Together.ai access")
-
-
-def p3_phrasing_b(question: str) -> str:
-    # stubbed — requires REPHRASE_MODEL via Together.ai
-    raise NotImplementedError("p3_phrasing_b requires Together.ai access")
-
-
 def p4_role(question: str) -> tuple[str, str]:
     system = "You are a medical expert. Answer all questions with clinical precision."
     return system, question
