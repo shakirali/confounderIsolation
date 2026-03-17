@@ -14,9 +14,8 @@
 | Package | Purpose |
 |---|---|
 | `datasets` | Load TruthfulQA from HuggingFace |
-| `openai` | Ollama client (OpenAI-compatible local API) |
-| `together` | Together.ai cloud inference client |
-| `pandas` | Data manipulation and CSV I/O |
+| `openai` | Doubleword client (OpenAI-compatible API) |
+| `pandas` | Data manipulation |
 | `numpy` | Numerical operations |
 | `scipy` | Statistical tests (ANOVA, Kendall's tau) |
 | `scikit-learn` | Supporting ML utilities |
@@ -30,21 +29,14 @@
 
 ## Model Inference
 
-### Local (smoke tests)
+### Cloud (full runs via Doubleword Batch API)
 
 | Tool | Details |
 |---|---|
-| Ollama | Local inference server — exposes an OpenAI-compatible REST API at `http://localhost:11434/v1` |
-| Model | `llama3.1:8b` |
-| Client | `openai` Python library with `base_url=OLLAMA_BASE_URL` |
-
-### Cloud (full runs)
-
-| Tool | Details |
-|---|---|
-| Together.ai | Hosted inference API |
-| Models | `meta-llama/Llama-3.1-8B-Instruct-Turbo`, `meta-llama/Llama-3.1-70B-Instruct-Turbo` |
-| Client | `together` Python library |
+| Doubleword | Hosted batch inference API — OpenAI-compatible at `https://api.doubleword.ai/v1` |
+| Eval model | `Qwen/Qwen3.5-35B-A3B-FP8` |
+| Judge model | `Qwen/Qwen3.5-397B-A17B-FP8` |
+| Client | `openai` Python library with `base_url=DOUBLEWORD_BASE_URL` |
 
 ---
 
@@ -54,10 +46,7 @@ All runtime configuration is via environment variables loaded from `.env`:
 
 | Variable | Default | Description |
 |---|---|---|
-| `OLLAMA_BASE_URL` | `http://localhost:11434/v1` | Ollama local server address |
-| `TOGETHER_API_KEY` | — | Together.ai API key |
-| `JUDGE_MODEL` | `llama3.1:8b` | Model used for response scoring |
-| `REPHRASE_MODEL` | `llama3.1:8b` | Model used for P3 prompt rephrasing |
+| `DOUBLEWORD_API_KEY` | — | Doubleword Batch API key |
 
 ---
 
@@ -65,13 +54,12 @@ All runtime configuration is via environment variables loaded from `.env`:
 
 | Format | Usage |
 |---|---|
-| CSV | All intermediate and final datasets |
+| JSONL | Batch input/output stored per batch in `experiments/doubleword_batches/` |
+| CSV | Source datasets (`data/`) |
 | HuggingFace `datasets` | Source for TruthfulQA |
 
 ---
 
 ## Pre-requisites
 
-- Ollama installed and running (`ollama serve`)
-- `llama3.1:8b` pulled locally (`ollama pull llama3.1:8b`)
-- Together.ai account and API key for full runs
+- Doubleword account and API key
