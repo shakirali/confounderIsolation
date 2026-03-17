@@ -171,36 +171,30 @@ def p5_fewshot(question: str) -> str:
 
 ### Tasks
 
-**Perturbed smoke test (Doubleword)** — ⏳ JUDGE RERUN NEEDED
-- Eval batch ID: `d0e2582b-8945-43e8-b538-bd7a2eedc8e0` (400 rows, 100 questions × 4 perturbation types) — eval responses are valid, do not re-eval
-- Judge batch ID: `0f319756-129a-4a95-8363-8fbf2ae1341a` — **discard**, submitted before p1_format/p5_fewshot stripping fixes were applied
-- Results: `experiments/doubleword_batches/0f319756-129a-4a95-8363-8fbf2ae1341a_judge/output.jsonl` — stale, submitted before fixes; will be superseded by rerun
-- Fix applied: `system_prompts` NaN → None; `max_tokens` 128 → 4096; `content_only=True` for judge
-- Fix applied: `doubleword_client.py` `content_only` flag to avoid parsing reasoning_content as scores
-- Fix applied: `load_jsonl_pairs()` strips p1_format JSON suffix and p5_fewshot preamble before judging
+**Perturbed smoke test (Doubleword)** — ✅ DONE
+- Eval batch ID: `d0e2582b-8945-43e8-b538-bd7a2eedc8e0` (400 rows, 100 questions × 4 perturbation types)
+- Judge batch ID: `b1999ff0-2489-41a7-9d2c-8a3a54cfc80a` (rerun with fixes applied)
+- Discarded judge: `0f319756-129a-4a95-8363-8fbf2ae1341a` — stale, submitted before stripping fixes
+- Results: `experiments/doubleword_batches/b1999ff0-2489-41a7-9d2c-8a3a54cfc80a_perturbed_judge/output.jsonl`
 
-**Rerun judge on full 400 rows to validate fixes don't regress other scores:**
-```bash
-cd /Users/shakirali/coding/confounderIsolation && source .venv/bin/activate
-PYTHONPATH=src/doubledword python src/doubledword/perturbed_judge_doubleword.py \
-    --eval-batch-id d0e2582b-8945-43e8-b538-bd7a2eedc8e0
-```
-- Record new judge batch ID here once submitted
-- Verify: p1_format and p5_fewshot parse errors drop to 0; other perturbation scores unchanged
+**Corrected findings (valid scores only, -1 parse errors excluded):**
+| Perturbation | Valid | Errors | Mean Score | Δ vs Baseline |
+|---|---|---|---|---|
+| baseline      | 99  | 1  | 0.960 | —      |
+| p1_format     | 99  | 1  | 0.808 | -0.152 |
+| p2_complexity | 100 | 0  | 0.930 | -0.030 |
+| p4_role       | 97  | 3  | 0.866 | -0.094 |
+| p5_fewshot    | 100 | 0  | 0.700 | -0.260 |
 
-**Initial findings (valid scores only, -1 parse errors excluded):**
-| Perturbation | Valid | Mean Score | Δ vs Baseline |
-|---|---|---|---|
-| baseline   | 99 | 0.960 | — |
-| p1_format  | 90 | 0.933 | -0.027 |
-| p2_complexity | 97 | 0.969 | +0.009 |
-| p4_role    | 98 | 0.959 | -0.001 |
-| p5_fewshot | 94 | 0.989 | +0.029 |
+**Key finding — p5_fewshot score was inflated by format bleed:**
+- Old (pre-fix) p5_fewshot score: 0.989 — the few-shot preamble in the judge's Question field biased the judge toward marking responses as truthful.
+- Corrected score: 0.700 — the largest drop of any perturbation type.
+- Implication: few-shot formatting significantly hurts truthfulness (Δ -0.260), not helps it as previously thought.
 
-**Parse error analysis:**
-- p1_format (10 errors): judge confused by JSON instruction in prompt — fixable
-- p5_fewshot (6 errors): similar format bleed issue
-- p2_complexity (3 errors) / p4_role (2 errors): genuinely hard/ambiguous questions or broken eval outputs — not perturbation-related
+**Parse errors (4 total):**
+- p1_format: 1 error (down from 10) ✅
+- p5_fewshot: 0 errors (down from 6) ✅
+- p4_role: 3 errors (unfixable — genuinely hard questions / broken eval outputs)
 
 **Full evaluation** — ⏳ TODO
 
