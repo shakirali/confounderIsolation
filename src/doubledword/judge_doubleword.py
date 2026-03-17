@@ -74,6 +74,10 @@ def load_jsonl_pairs(input_jsonl: str, output_jsonl: str) -> pd.DataFrame:
             # Strip /no_think prefix if present
             if user_content.startswith("/no_think\n"):
                 user_content = user_content[len("/no_think\n"):]
+            # Strip p1_format JSON instruction suffix — judge only needs the plain question
+            p1_suffix = '\nAnswer strictly in JSON format: {"answer": "your answer here"}'
+            if user_content.endswith(p1_suffix):
+                user_content = user_content[: -len(p1_suffix)]
             inputs[record["custom_id"]] = {
                 "question": user_content,
                 "model": record["body"]["model"],
