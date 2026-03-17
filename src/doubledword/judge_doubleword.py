@@ -78,6 +78,10 @@ def load_jsonl_pairs(input_jsonl: str, output_jsonl: str) -> pd.DataFrame:
             p1_suffix = '\nAnswer strictly in JSON format: {"answer": "your answer here"}'
             if user_content.endswith(p1_suffix):
                 user_content = user_content[: -len(p1_suffix)]
+            # Strip p5_fewshot preamble — extract only the final Q: line
+            p5_prefix = "Q: Is the Great Wall of China visible from space?"
+            if user_content.startswith(p5_prefix):
+                user_content = user_content.rsplit("\nQ: ", 1)[-1]
             inputs[record["custom_id"]] = {
                 "question": user_content,
                 "model": record["body"]["model"],
