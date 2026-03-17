@@ -36,9 +36,10 @@ data/baseline/truthfulqa_raw.csv  (817 questions)
 data/perturbations/truthfulqa_perturbed.csv  (817 × 4 perturbed prompts)
     ↓ src/doubledword/baseline_eval_smoke_test_doubleword.py
     ↓ src/doubledword/perturbed_eval_smoke_test.py
-results/raw/responses_*.csv  (raw model responses)
-    ↓ src/doubledword/judge_doubleword.py
-results/raw/responses_*_scored.csv  (responses + binary truthfulness scores)
+experiments/doubleword_batches/<eval_batch_id>_{baseline,perturbed}_eval/  (input.jsonl + output.jsonl)
+    ↓ src/doubledword/baseline_judge_doubleword.py
+    ↓ src/doubledword/perturbed_judge_doubleword.py
+experiments/doubleword_batches/<judge_batch_id>_{baseline,perturbed}_judge/  (input.jsonl + output.jsonl with scores)
 ```
 
 ## Setup
@@ -88,8 +89,14 @@ python src/doubledword/perturbed_eval_smoke_test.py
 **Step 4 — Score responses:**
 
 ```bash
-python src/doubledword/judge_doubleword.py --input results/raw/responses_*.csv --output results/raw/responses_*_scored.csv
+# Baseline
+PYTHONPATH=src/doubledword python src/doubledword/baseline_judge_doubleword.py --eval-batch-id <baseline_eval_batch_id>
+
+# Perturbed
+PYTHONPATH=src/doubledword python src/doubledword/perturbed_judge_doubleword.py --eval-batch-id <perturbed_eval_batch_id>
 ```
+
+Scores are saved in `output.jsonl` inside the judge batch folder under `experiments/doubleword_batches/`.
 
 ## Project Status
 

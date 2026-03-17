@@ -209,8 +209,6 @@ def score_jsonl(
     )
     df["score"] = scores
 
-    output_path = os.path.join(bdir, "scored.csv")
-    df.to_csv(output_path, index=False)
-    print(f"\nSaved {len(df)} scored responses → {output_path}")
-    print(f"Score distribution:\n{df['score'].value_counts().sort_index().to_string()}")
+    print(f"\nScore distribution:\n{df['score'].value_counts().sort_index().to_string()}")
     print(f"Mean score: {df[df['score'] != -1]['score'].mean():.3f} (excluding parse errors)")
+    print(f"\nScores saved in output.jsonl → {bdir}")

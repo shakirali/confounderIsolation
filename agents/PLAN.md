@@ -115,7 +115,7 @@ uv pip install -r requirements.txt
 - Single-entry test judge batch: `2d2254a6-0f82-4fb0-9f3b-2b74faee3e68` — 1-question smoke test, not used in results
 
 ### Deliverable ✅
-`experiments/results/raw/baseline_scored.csv` — 100 questions, mean score = 0.960 (95/99 valid scores truthful, 1 parse error).
+`experiments/doubleword_batches/761a53ba-8306-49dd-9c9a-a2ff32c3c0bc_baseline_judge/output.jsonl` — 100 questions, mean score = 0.960 (95/99 valid scores truthful, 1 parse error).
 
 ---
 
@@ -174,7 +174,7 @@ def p5_fewshot(question: str) -> str:
 **Perturbed smoke test (Doubleword)** — ⏳ JUDGE RERUN NEEDED
 - Eval batch ID: `d0e2582b-8945-43e8-b538-bd7a2eedc8e0` (400 rows, 100 questions × 4 perturbation types) — eval responses are valid, do not re-eval
 - Judge batch ID: `0f319756-129a-4a95-8363-8fbf2ae1341a` — **discard**, submitted before p1_format/p5_fewshot stripping fixes were applied
-- Results: `experiments/results/raw/perturbed_scored.csv` — stale, will be overwritten by rerun
+- Results: `experiments/doubleword_batches/0f319756-129a-4a95-8363-8fbf2ae1341a_judge/output.jsonl` — stale, submitted before fixes; will be superseded by rerun
 - Fix applied: `system_prompts` NaN → None; `max_tokens` 128 → 4096; `content_only=True` for judge
 - Fix applied: `doubleword_client.py` `content_only` flag to avoid parsing reasoning_content as scores
 - Fix applied: `load_jsonl_pairs()` strips p1_format JSON suffix and p5_fewshot preamble before judging
@@ -211,10 +211,10 @@ PYTHONPATH=src/doubledword python src/doubledword/perturbed_judge_doubleword.py 
 **Scoring**
 - `src/doubledword/judge_doubleword.py` — score all responses via a separate batch job
 - Judge model: `Qwen/Qwen3.5-397B-A17B-FP8`
-- Merge all into `results/raw/responses_all.csv`
+- Scores parsed from `output.jsonl` in each judge batch folder at analysis time
 
 ### Deliverable
-`results/raw/responses_all.csv` — all responses and binary scores across all models and perturbation types.
+`experiments/doubleword_batches/<judge_batch_id>_perturbed_judge/output.jsonl` — judge responses for all variants.
 
 ---
 
