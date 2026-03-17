@@ -50,7 +50,7 @@ def run_perturbed_smoke_test(
 
     if eval_batch_id:
         print(f"Downloading eval results from existing batch: {eval_batch_id}")
-        download_results(eval_batch_id, len(df), label="eval")
+        download_results(eval_batch_id, len(df), label="perturbed_eval")
     else:
         print(f"Querying eval model: {eval_model}")
         submit_batch(
@@ -58,7 +58,7 @@ def run_perturbed_smoke_test(
             model=eval_model,
             system_prompts=system_prompts,
             completion_window=completion_window,
-            label="eval",
+            label="perturbed_eval",
         )
 
     print("\nBatch complete. Score with:")

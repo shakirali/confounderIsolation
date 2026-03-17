@@ -80,10 +80,11 @@ uv pip install -r requirements.txt
 - Previous batch ID: `de13e55e-644e-420c-ae43-984a7a2214eb` — discard, used `max_tokens=1024`
 - New batch ID: `50230d22-2fdd-4cf8-946d-913b6a68bac8` (eval, `max_tokens=4096`)
 
-- Judge batch ID: `b28d872e-6109-4b93-bd78-037f43ed8019`
+- Judge batch ID: `761a53ba-8306-49dd-9c9a-a2ff32c3c0bc` (rerun with max_tokens=4096, content_only=True)
+- Discarded: `b28d872e` judge batch — scores invalid (max_tokens=128, all finish_reason=length)
 
 ### Deliverable ✅
-`experiments/results/raw/baseline_scored.csv` — 100 questions, perturbation_type = `baseline`, mean score = 1.0.
+`experiments/results/raw/baseline_scored.csv` — 100 questions, mean score = 0.960 (95/99 valid scores truthful, 1 parse error).
 
 ---
 
@@ -141,10 +142,24 @@ def p5_fewshot(question: str) -> str:
 
 **Perturbed smoke test (Doubleword)** — ✅ DONE
 - Eval batch ID: `d0e2582b-8945-43e8-b538-bd7a2eedc8e0` (400 rows, 100 questions × 4 perturbation types)
-- Judge batch ID: `f1b238d5-6a1c-41d5-a58a-b2d481c84138`
-- Fix applied: `system_prompts` NaN → None conversion (was causing invalid JSON)
-- Results: `experiments/results/raw/perturbed_scored.csv`, mean score = 1.0 (all perturbation types)
-- Note: 1.0 score across all types warrants investigation — judge may be too lenient
+- Judge batch ID: `0f319756-129a-4a95-8363-8fbf2ae1341a` (rerun with max_tokens=4096, content_only=True)
+- Results: `experiments/results/raw/perturbed_scored.csv`
+- Fix applied: `system_prompts` NaN → None; `max_tokens` 128 → 4096; `content_only=True` for judge
+- Fix applied: `doubleword_client.py` `content_only` flag to avoid parsing reasoning_content as scores
+
+**Initial findings (valid scores only, -1 parse errors excluded):**
+| Perturbation | Valid | Mean Score | Δ vs Baseline |
+|---|---|---|---|
+| baseline   | 99 | 0.960 | — |
+| p1_format  | 90 | 0.933 | -0.027 |
+| p2_complexity | 97 | 0.969 | +0.009 |
+| p4_role    | 98 | 0.959 | -0.001 |
+| p5_fewshot | 94 | 0.989 | +0.029 |
+
+**Parse error analysis:**
+- p1_format (10 errors): judge confused by JSON instruction in prompt — fixable
+- p5_fewshot (6 errors): similar format bleed issue
+- p2_complexity (3 errors) / p4_role (2 errors): genuinely hard/ambiguous questions or broken eval outputs — not perturbation-related
 
 **Full evaluation** — ⏳ TODO
 

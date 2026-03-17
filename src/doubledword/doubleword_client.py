@@ -51,8 +51,13 @@ def batch_dir(batch_id: str, label: str) -> str:
     return os.path.join(base, f"{batch_id}_{label}")
 
 
-def download_results(batch_id: str, num_requests: int, label: str = "batch") -> list[str]:
-    """Download results from a completed batch by ID, reordered by custom_id."""
+def download_results(batch_id: str, num_requests: int, label: str = "batch", content_only: bool = False) -> list[str]:
+    """Download results from a completed batch by ID, reordered by custom_id.
+
+    Args:
+        content_only: If True, only return message.content — do not fall back to reasoning_content.
+                      Use this for judge scoring to avoid parsing thinking traces as scores.
+    """
     client = get_client()
     status = client.batches.retrieve(batch_id)
     if status.status != "completed":
@@ -80,7 +85,10 @@ def download_results(batch_id: str, num_requests: int, label: str = "batch") -> 
         idx = int(record["custom_id"])
         try:
             msg = record["response"]["body"]["choices"][0]["message"]
-            results[idx] = msg.get("content") or msg.get("reasoning_content") or "[ERROR]"
+            if content_only:
+                results[idx] = msg.get("content") or ""
+            else:
+                results[idx] = msg.get("content") or msg.get("reasoning_content") or "[ERROR]"
         except (KeyError, IndexError):
             results[idx] = "[ERROR]"
 
@@ -94,6 +102,7 @@ def submit_batch(
     completion_window: str = DEFAULT_COMPLETION_WINDOW,
     max_tokens: int = 4096,
     enable_thinking: bool = True,
+    content_only: bool = False,
     label: str = "batch",
 ) -> list[str]:
     """
@@ -174,4 +183,4 @@ def submit_batch(
 
             time.sleep(poll_interval)
 
-    return download_results(batch.id, len(prompts), label=label)
+    return download_results(batch.id, len(prompts), label=label, content_only=content_only)

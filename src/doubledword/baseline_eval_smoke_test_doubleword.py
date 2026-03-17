@@ -45,10 +45,10 @@ def run_smoke_test(
 
     if eval_batch_id:
         print(f"Downloading eval results from existing batch: {eval_batch_id}")
-        download_results(eval_batch_id, len(df), label="eval")
+        download_results(eval_batch_id, len(df), label="baseline_eval")
     else:
         print(f"Querying eval model: {eval_model}")
-        submit_batch(df["question"].tolist(), model=eval_model, completion_window=completion_window, label="eval")
+        submit_batch(df["question"].tolist(), model=eval_model, completion_window=completion_window, label="baseline_eval")
 
     print("\nBatch complete. Score with:")
     print("  PYTHONPATH=src/doubledword python src/doubledword/judge_doubleword.py \\")
