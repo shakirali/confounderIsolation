@@ -93,7 +93,7 @@ def load_jsonl_pairs(input_jsonl: str, output_jsonl: str) -> pd.DataFrame:
         for line in f:
             record = json.loads(line)
             msg = record["response"]["body"]["choices"][0]["message"]
-            response = msg.get("content") or msg.get("reasoning_content") or "[ERROR]"
+            response = msg.get("content") or "[ERROR]"
             outputs[record["custom_id"]] = response
 
     # Join by custom_id, sorted numerically
