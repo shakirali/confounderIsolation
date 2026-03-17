@@ -24,17 +24,16 @@ load_dotenv()
 def run_perturbed_judge(
     eval_batch_id: str,
     judge_batch_id: str | None = None,
-    build_only: str | None = None,
 ):
     """
     Score perturbed eval responses via Doubleword judge batch.
 
-    Scored CSV is saved as scored.csv inside the judge batch folder.
+    Builds input.jsonl into pending_perturbed_judge/, prompts for inspection,
+    then submits. Results saved in the judge batch folder.
 
     Args:
         eval_batch_id: Batch ID of the completed perturbed eval run.
-        judge_batch_id: If provided, skip submission and download from this completed batch ID.
-        build_only: If set, write judge input JSONL to this path without submitting.
+        judge_batch_id: If provided, skip build/submit and download from this completed batch ID.
     """
     bdir = batch_dir(eval_batch_id, "perturbed_eval")
     eval_input_jsonl = os.path.join(bdir, "input.jsonl")
@@ -44,7 +43,6 @@ def run_perturbed_judge(
         eval_input_jsonl=eval_input_jsonl,
         eval_output_jsonl=eval_output_jsonl,
         judge_batch_id=judge_batch_id,
-        build_only=build_only,
         label="perturbed_judge",
     )
 
@@ -53,11 +51,9 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Score perturbed eval responses via Doubleword judge batch")
     parser.add_argument("--eval-batch-id", required=True, help="Completed perturbed eval batch ID")
     parser.add_argument("--judge-batch-id", default=None, help="Resume from a completed judge batch ID")
-    parser.add_argument("--build-only", default=None, metavar="PATH", help="Build judge input JSONL to PATH without submitting")
     args = parser.parse_args()
 
     run_perturbed_judge(
         eval_batch_id=args.eval_batch_id,
         judge_batch_id=args.judge_batch_id,
-        build_only=args.build_only,
     )

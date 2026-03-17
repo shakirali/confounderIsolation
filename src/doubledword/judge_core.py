@@ -10,7 +10,7 @@ import os
 
 import pandas as pd
 
-from doubleword_client import DEFAULT_COMPLETION_WINDOW, batch_dir, download_results, submit_batch
+from doubleword_client import DEFAULT_COMPLETION_WINDOW, batch_dir, download_results, submit_batch_from_file
 
 DEFAULT_JUDGE_MODEL = "Qwen/Qwen3.5-397B-A17B-FP8"
 
@@ -100,10 +100,9 @@ def build_judge_input(
     judge_model: str = DEFAULT_JUDGE_MODEL,
 ):
     """
-    Build judge batch input JSONL locally without submitting.
+    Build judge batch input JSONL and save to output_path.
 
     Writes one line per (question, response) pair in Doubleword batch format.
-    Useful for inspecting prompts before submission.
     """
     lines = []
     for i, (q, r) in enumerate(zip(questions, responses)):
@@ -137,39 +136,42 @@ def run_judge(
     """
     Score model responses using a judge model via Doubleword batch.
 
+    Builds input.jsonl into a pending_<label>/ folder, prompts for inspection,
+    then submits. The folder is renamed to <batch_id>_<label>/ after submission.
+
     Args:
         questions: Original questions.
         responses: Model responses to evaluate.
         judge_model: Model to use as truthfulness judge.
         completion_window: "24h" or "1h".
-        judge_batch_id: If provided, skip submission and download from this completed batch ID.
+        judge_batch_id: If provided, skip build/submit and download from this completed batch ID.
         label: Batch directory label — use "baseline_judge" or "perturbed_judge".
 
     Returns:
-        Tuple of (scores, judge_batch_dir). Scores are 1=truthful, 0=not truthful, -1=parse error.
+        Tuple of (scores, judge_batch_dir).
     """
-    judge_prompts = [
-        JUDGE_PROMPT.format(question=q, response=r)
-        for q, r in zip(questions, responses)
-    ]
-
     if judge_batch_id:
         print(f"Downloading scoring results from existing batch: {judge_batch_id}")
-        raw_results = download_results(judge_batch_id, len(judge_prompts), label=label)
+        raw_results = download_results(judge_batch_id, len(questions), label=label)
         bdir = batch_dir(judge_batch_id, label)
-    else:
-        print(f"Scoring {len(judge_prompts)} responses with judge model: {judge_model}")
-        raw_results, submitted_batch_id = submit_batch(
-            judge_prompts,
-            model=judge_model,
-            completion_window=completion_window,
-            max_tokens=4096,
-            enable_thinking=False,
-            content_only=True,
-            label=label,
-        )
-        bdir = batch_dir(submitted_batch_id, label)
+        return parse_scores(raw_results), bdir
 
+    # Build input.jsonl into pending folder for inspection
+    pending_dir = os.path.join("experiments", "doubleword_batches", f"pending_{label}")
+    input_path = os.path.join(pending_dir, "input.jsonl")
+    build_judge_input(questions, responses, input_path, judge_model)
+
+    print(f"\nInspect input.jsonl at: {input_path}")
+    input("Press Enter to submit the batch (Ctrl+C to cancel)...")
+
+    raw_results, submitted_batch_id = submit_batch_from_file(
+        input_jsonl_path=input_path,
+        num_requests=len(questions),
+        completion_window=completion_window,
+        content_only=True,
+        label=label,
+    )
+    bdir = batch_dir(submitted_batch_id, label)
     return parse_scores(raw_results), bdir
 
 
@@ -179,25 +181,17 @@ def score_jsonl(
     judge_model: str = DEFAULT_JUDGE_MODEL,
     completion_window: str = DEFAULT_COMPLETION_WINDOW,
     judge_batch_id: str | None = None,
-    build_only: str | None = None,
     label: str = "judge",
 ):
     """
-    Score responses from local eval batch JSONL files and write scored.csv into the judge batch folder.
+    Score responses from local eval batch JSONL files.
 
-    If build_only is set, writes the judge input JSONL to that path and exits without submitting.
+    Builds input.jsonl into a pending_<label>/ folder, prompts for inspection,
+    submits the batch, and prints score summary. Results are in output.jsonl
+    inside the judge batch folder.
     """
     df = load_jsonl_pairs(eval_input_jsonl, eval_output_jsonl)
     print(f"Loaded {len(df)} question/response pairs from local batch files.")
-
-    if build_only:
-        build_judge_input(
-            questions=df["question"].tolist(),
-            responses=df["response"].tolist(),
-            output_path=build_only,
-            judge_model=judge_model,
-        )
-        return
 
     scores, bdir = run_judge(
         questions=df["question"].tolist(),
@@ -211,4 +205,4 @@ def score_jsonl(
 
     print(f"\nScore distribution:\n{df['score'].value_counts().sort_index().to_string()}")
     print(f"Mean score: {df[df['score'] != -1]['score'].mean():.3f} (excluding parse errors)")
-    print(f"\nScores saved in output.jsonl → {bdir}")
+    print(f"\nResults saved → {bdir}")

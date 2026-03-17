@@ -95,6 +95,37 @@ def download_results(batch_id: str, num_requests: int, label: str = "batch", con
     return results
 
 
+def _poll_and_download(
+    batch_id: str,
+    num_requests: int,
+    label: str,
+    content_only: bool,
+) -> tuple[list[str], str]:
+    """Poll until batch completes then download results. Returns (responses, batch_id)."""
+    client = get_client()
+    poll_interval = 30
+    with tqdm(desc="Waiting for batch", unit="poll") as pbar:
+        while True:
+            status = client.batches.retrieve(batch_id)
+            counts = status.request_counts
+            pbar.set_postfix({
+                "status": status.status,
+                "done": counts.completed,
+                "total": counts.total,
+            })
+            pbar.update(1)
+
+            if status.status == "completed":
+                break
+            elif status.status in ("failed", "expired", "cancelled"):
+                raise RuntimeError(f"Batch {batch_id} ended with status: {status.status}")
+
+            time.sleep(poll_interval)
+
+    results = download_results(batch_id, num_requests, label=label, content_only=content_only)
+    return results, batch_id
+
+
 def submit_batch(
     prompts: list[str],
     model: str = DEFAULT_MODEL,
@@ -107,15 +138,6 @@ def submit_batch(
 ) -> tuple[list[str], str]:
     """
     Submit prompts as a Doubleword batch job and return responses in order.
-
-    Args:
-        prompts: List of user prompts.
-        model: Doubleword model ID.
-        system_prompts: Optional per-prompt system prompts (same length as prompts).
-        completion_window: "24h" (cheapest) or "1h" (faster).
-        max_tokens: Max tokens per response.
-        enable_thinking: Set False to disable Qwen3 thinking mode.
-        label: Descriptive label appended to the batch directory (e.g. "eval", "judge").
 
     Returns:
         Tuple of (response strings, batch_id). Responses are same order as input;
@@ -165,24 +187,53 @@ def submit_batch(
         f.write(jsonl_bytes)
     print(f"Saved input → {input_path}")
 
-    poll_interval = 30
-    with tqdm(desc="Waiting for batch", unit="poll") as pbar:
-        while True:
-            status = client.batches.retrieve(batch.id)
-            counts = status.request_counts
-            pbar.set_postfix({
-                "status": status.status,
-                "done": counts.completed,
-                "total": counts.total,
-            })
-            pbar.update(1)
+    return _poll_and_download(batch.id, len(prompts), label=label, content_only=content_only)
 
-            if status.status == "completed":
-                break
-            elif status.status in ("failed", "expired", "cancelled"):
-                raise RuntimeError(f"Batch {batch.id} ended with status: {status.status}")
 
-            time.sleep(poll_interval)
+def submit_batch_from_file(
+    input_jsonl_path: str,
+    num_requests: int,
+    completion_window: str = DEFAULT_COMPLETION_WINDOW,
+    content_only: bool = False,
+    label: str = "batch",
+) -> tuple[list[str], str]:
+    """
+    Submit a pre-built input.jsonl as a Doubleword batch job.
 
-    results = download_results(batch.id, len(prompts), label=label, content_only=content_only)
-    return results, batch.id
+    Renames the pending batch folder to <batch_id>_<label>/ after submission.
+
+    Args:
+        input_jsonl_path: Path to the pre-built input.jsonl (e.g. pending_<label>/input.jsonl).
+        num_requests: Number of requests in the file.
+        completion_window: "24h" or "1h".
+        content_only: If True, only return message.content from responses.
+        label: Batch directory label.
+
+    Returns:
+        Tuple of (response strings, batch_id).
+    """
+    client = get_client()
+
+    with open(input_jsonl_path, "rb") as f:
+        jsonl_bytes = f.read()
+
+    print(f"Uploading batch file ({num_requests} requests)...")
+    batch_file = client.files.create(
+        file=("batch.jsonl", io.BytesIO(jsonl_bytes), "application/jsonl"),
+        purpose="batch",
+    )
+
+    batch = client.batches.create(
+        input_file_id=batch_file.id,
+        endpoint="/v1/chat/completions",
+        completion_window=completion_window,
+    )
+    print(f"Batch created: {batch.id} (window={completion_window})")
+
+    # Rename pending_<label>/ → <batch_id>_<label>/
+    pending_dir = os.path.dirname(os.path.abspath(input_jsonl_path))
+    final_dir = os.path.join("experiments", "doubleword_batches", f"{batch.id}_{label}")
+    os.rename(pending_dir, final_dir)
+    print(f"Renamed batch folder → {final_dir}")
+
+    return _poll_and_download(batch.id, num_requests, label=label, content_only=content_only)
