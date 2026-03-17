@@ -182,9 +182,8 @@ def p5_fewshot(question: str) -> str:
 **Rerun judge on full 400 rows to validate fixes don't regress other scores:**
 ```bash
 cd /Users/shakirali/coding/confounderIsolation && source .venv/bin/activate
-python src/doubledword/judge_doubleword.py \
-    --eval-input-jsonl experiments/doubleword_batches/d0e2582b-8945-43e8-b538-bd7a2eedc8e0_perturbed_eval/input.jsonl \
-    --eval-output-jsonl experiments/doubleword_batches/d0e2582b-8945-43e8-b538-bd7a2eedc8e0_perturbed_eval/output.jsonl \
+PYTHONPATH=src/doubledword python src/doubledword/perturbed_judge_doubleword.py \
+    --eval-batch-id d0e2582b-8945-43e8-b538-bd7a2eedc8e0 \
     --output experiments/results/raw/perturbed_scored.csv
 ```
 - Record new judge batch ID here once submitted
