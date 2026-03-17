@@ -183,8 +183,7 @@ def p5_fewshot(question: str) -> str:
 ```bash
 cd /Users/shakirali/coding/confounderIsolation && source .venv/bin/activate
 PYTHONPATH=src/doubledword python src/doubledword/perturbed_judge_doubleword.py \
-    --eval-batch-id d0e2582b-8945-43e8-b538-bd7a2eedc8e0 \
-    --output experiments/results/raw/perturbed_scored.csv
+    --eval-batch-id d0e2582b-8945-43e8-b538-bd7a2eedc8e0
 ```
 - Record new judge batch ID here once submitted
 - Verify: p1_format and p5_fewshot parse errors drop to 0; other perturbation scores unchanged

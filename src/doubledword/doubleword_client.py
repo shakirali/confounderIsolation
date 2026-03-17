@@ -104,7 +104,7 @@ def submit_batch(
     enable_thinking: bool = True,
     content_only: bool = False,
     label: str = "batch",
-) -> list[str]:
+) -> tuple[list[str], str]:
     """
     Submit prompts as a Doubleword batch job and return responses in order.
 
@@ -118,7 +118,8 @@ def submit_batch(
         label: Descriptive label appended to the batch directory (e.g. "eval", "judge").
 
     Returns:
-        List of response strings, same order as input. Failed requests return "[ERROR]".
+        Tuple of (response strings, batch_id). Responses are same order as input;
+        failed requests return "[ERROR]".
     """
     client = get_client()
 
@@ -183,4 +184,5 @@ def submit_batch(
 
             time.sleep(poll_interval)
 
-    return download_results(batch.id, len(prompts), label=label, content_only=content_only)
+    results = download_results(batch.id, len(prompts), label=label, content_only=content_only)
+    return results, batch.id
