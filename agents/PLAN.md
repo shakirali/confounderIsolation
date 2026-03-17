@@ -103,16 +103,16 @@ uv pip install -r requirements.txt
 - Extract the `validation` split (817 questions)
 - Save to `data/baseline/truthfulqa_raw.csv`
 
-**3. Baseline evaluation via Doubleword batch** ⏳ RERUN NEEDED
+**3. Baseline evaluation via Doubleword batch** ✅ DONE
 - `src/doubledword/baseline_eval_smoke_test_doubleword.py` — submit baseline prompts as a batch job
 - `src/doubledword/judge_doubleword.py` — score responses via a separate batch job
 - Eval model: `Qwen/Qwen3.5-35B-A3B-FP8`
 - Judge model: `Qwen/Qwen3.5-397B-A17B-FP8`
 - Previous batch ID: `de13e55e-644e-420c-ae43-984a7a2214eb` — discard, used `max_tokens=1024`
-- New batch ID: `50230d22-2fdd-4cf8-946d-913b6a68bac8` (eval, `max_tokens=4096`)
-
-- Judge batch ID: `761a53ba-8306-49dd-9c9a-a2ff32c3c0bc` (rerun with max_tokens=4096, content_only=True)
+- Eval batch ID: `50230d22-2fdd-4cf8-946d-913b6a68bac8` (max_tokens=4096)
+- Judge batch ID: `761a53ba-8306-49dd-9c9a-a2ff32c3c0bc` (max_tokens=4096, content_only=True)
 - Discarded: `b28d872e` judge batch — scores invalid (max_tokens=128, all finish_reason=length)
+- Single-entry test judge batch: `2d2254a6-0f82-4fb0-9f3b-2b74faee3e68` — 1-question smoke test, not used in results
 
 ### Deliverable ✅
 `experiments/results/raw/baseline_scored.csv` — 100 questions, mean score = 0.960 (95/99 valid scores truthful, 1 parse error).
@@ -165,18 +165,30 @@ def p5_fewshot(question: str) -> str:
 
 ---
 
-## Phase 3: Model Evaluations ✅ SMOKE TEST DONE
+## Phase 3: Model Evaluations ⏳ IN PROGRESS
 
 **Goal:** Query all models on all perturbation variants and score responses via Doubleword batch.
 
 ### Tasks
 
-**Perturbed smoke test (Doubleword)** — ✅ DONE
-- Eval batch ID: `d0e2582b-8945-43e8-b538-bd7a2eedc8e0` (400 rows, 100 questions × 4 perturbation types)
-- Judge batch ID: `0f319756-129a-4a95-8363-8fbf2ae1341a` (rerun with max_tokens=4096, content_only=True)
-- Results: `experiments/results/raw/perturbed_scored.csv`
+**Perturbed smoke test (Doubleword)** — ⏳ JUDGE RERUN NEEDED
+- Eval batch ID: `d0e2582b-8945-43e8-b538-bd7a2eedc8e0` (400 rows, 100 questions × 4 perturbation types) — eval responses are valid, do not re-eval
+- Judge batch ID: `0f319756-129a-4a95-8363-8fbf2ae1341a` — **discard**, submitted before p1_format/p5_fewshot stripping fixes were applied
+- Results: `experiments/results/raw/perturbed_scored.csv` — stale, will be overwritten by rerun
 - Fix applied: `system_prompts` NaN → None; `max_tokens` 128 → 4096; `content_only=True` for judge
 - Fix applied: `doubleword_client.py` `content_only` flag to avoid parsing reasoning_content as scores
+- Fix applied: `load_jsonl_pairs()` strips p1_format JSON suffix and p5_fewshot preamble before judging
+
+**Rerun judge on full 400 rows to validate fixes don't regress other scores:**
+```bash
+cd /Users/shakirali/coding/confounderIsolation && source .venv/bin/activate
+python src/doubledword/judge_doubleword.py \
+    --eval-input-jsonl experiments/doubleword_batches/d0e2582b-8945-43e8-b538-bd7a2eedc8e0_perturbed_eval/input.jsonl \
+    --eval-output-jsonl experiments/doubleword_batches/d0e2582b-8945-43e8-b538-bd7a2eedc8e0_perturbed_eval/output.jsonl \
+    --output experiments/results/raw/perturbed_scored.csv
+```
+- Record new judge batch ID here once submitted
+- Verify: p1_format and p5_fewshot parse errors drop to 0; other perturbation scores unchanged
 
 **Initial findings (valid scores only, -1 parse errors excluded):**
 | Perturbation | Valid | Mean Score | Δ vs Baseline |
