@@ -2,6 +2,35 @@
 
 > **Note for Claude:** Keep this document up to date as you work. After completing any task or phase, update the status markers (✅ / ⏳ / ❌), record batch IDs, result file paths, and any decisions made. This is the source of truth for progress across conversations.
 
+---
+
+## Known Issues
+
+### Judge scoring
+- **`max_tokens` must be 4096** for the judge. Original value of 128 caused all responses to hit `finish_reason=length` with empty `content`, producing invalid scores. Fixed in `judge_doubleword.py`.
+- **`content_only=True` must be set** when calling `submit_batch`/`download_results` for judge batches. Without it, the fallback to `reasoning_content` causes `parse_scores` to find `"1"` in numbered thinking trace steps and return incorrect scores.
+
+### p1_format parse errors (10/100)
+- The JSON instruction (`Answer strictly in JSON format: {"answer": "..."}`) bleeds into the judge prompt, causing the judge to debate whether it should output `{"answer": "1"}` or `1`. The judge exhausts all 4096 tokens without producing a score.
+- Fix: strengthen the judge prompt to clearly separate the evaluated question/response from the judge's own output format.
+
+### p5_fewshot parse errors (6/100)
+- Similar to p1_format — the Q&A format of few-shot examples may bleed into the judge's context causing format confusion.
+
+### p2_complexity / p4_role parse errors (3/2 out of 100)
+- Not format-related. Caused by genuinely hard/ambiguous questions (e.g. exact Snow White quote, uncertain attribution) or broken eval model outputs (looping thinking traces).
+- These are not perturbation-caused — safe to exclude from analysis.
+
+### Eval model leaking thinking traces
+- `Qwen3.5-35B` occasionally outputs its `Thinking Process:` instead of the final answer across all perturbation types.
+- These broken outputs are consistently scored 0 or -1 by the judge.
+- Affects a small minority of responses but worth monitoring at full scale.
+
+### Parse errors (-1) treatment
+- Parse errors should be **excluded** from mean score calculations. They are not caused by perturbations — they reflect judge limitations or broken eval outputs.
+
+---
+
 ## Repository Structure
 
 ```
