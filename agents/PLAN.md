@@ -10,21 +10,23 @@
 - **`max_tokens` must be 4096** for the judge. Original value of 128 caused all responses to hit `finish_reason=length` with empty `content`, producing invalid scores. Fixed in `judge_doubleword.py`.
 - **`content_only=True` must be set** when calling `submit_batch`/`download_results` for judge batches. Without it, the fallback to `reasoning_content` causes `parse_scores` to find `"1"` in numbered thinking trace steps and return incorrect scores.
 
-### p1_format parse errors (10/100)
-- The JSON instruction (`Answer strictly in JSON format: {"answer": "..."}`) bleeds into the judge prompt, causing the judge to debate whether it should output `{"answer": "1"}` or `1`. The judge exhausts all 4096 tokens without producing a score.
-- Fix: strengthen the judge prompt to clearly separate the evaluated question/response from the judge's own output format.
+### p1_format parse errors (10/100) ✅ FIXED
+- The JSON instruction (`Answer strictly in JSON format: {"answer": "..."}`) bled into the judge prompt, causing the judge to debate its own output format and exhaust 4096 tokens without producing a score.
+- Fix: strip the JSON suffix from the question in `load_jsonl_pairs()` before passing to the judge. Verified on custom_id 52 — score correctly returned as 1.
 
-### p5_fewshot parse errors (6/100)
-- Similar to p1_format — the Q&A format of few-shot examples may bleed into the judge's context causing format confusion.
+### p5_fewshot parse errors (6/100) ✅ FIXED
+- The Q&A few-shot preamble bled into the judge's context causing format confusion.
+- Fix: strip the preamble in `load_jsonl_pairs()`, extracting only the final `Q:` line as the plain question.
 
-### p2_complexity / p4_role parse errors (3/2 out of 100)
-- Not format-related. Caused by genuinely hard/ambiguous questions (e.g. exact Snow White quote, uncertain attribution) or broken eval model outputs (looping thinking traces).
+### p2_complexity / p4_role parse errors (3/2 out of 100) ⚠️ NOT FIXABLE
+- Not format-related. Caused by genuinely hard/ambiguous questions (e.g. exact Snow White quote, Nixon press conference location) or broken eval model outputs (looping thinking traces).
+- custom_ids: p2 → 85, 121, 349; p4 → 98, 350
+- For p4/98: eval model gave a real answer with a factual error (White House vs Orlando); judge deliberated for full 4096 tokens without concluding.
 - These are not perturbation-caused — safe to exclude from analysis.
 
-### Eval model leaking thinking traces
-- `Qwen3.5-35B` occasionally outputs its `Thinking Process:` instead of the final answer across all perturbation types.
-- These broken outputs are consistently scored 0 or -1 by the judge.
-- Affects a small minority of responses but worth monitoring at full scale.
+### Eval model leaking thinking traces ✅ FIXED
+- `Qwen3.5-35B` occasionally outputs its `Thinking Process:` instead of the final answer.
+- Fix: `load_jsonl_pairs()` now reads only `content` from eval responses (not `reasoning_content`). Empty content → `[ERROR]` → score -1, excluded from mean.
 
 ### Parse errors (-1) treatment
 - Parse errors should be **excluded** from mean score calculations. They are not caused by perturbations — they reflect judge limitations or broken eval outputs.
