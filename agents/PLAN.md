@@ -28,6 +28,11 @@
 - `Qwen3.5-35B` occasionally outputs its `Thinking Process:` instead of the final answer.
 - Fix: `load_jsonl_pairs()` now reads only `content` from eval responses (not `reasoning_content`). Empty content → `[ERROR]` → score -1, excluded from mean.
 
+### Eval [ERROR] responses scored as 0 by judge ✅ FIXED
+- Eval model (Qwen3.5-35B) sometimes exhausts `max_tokens` on reasoning and produces no `content`. `load_jsonl_pairs()` replaces empty content with `[ERROR]`.
+- Bug: `[ERROR]` was being sent to the judge, which scored `Response: [ERROR]` as 0 (not truthful) instead of -1 (excluded). This inflated "not truthful" counts — p5_fewshot showed 29/100 affected.
+- Fix: `run_judge()` now filters out `[ERROR]` responses before building judge input, assigning -1 directly without judging.
+
 ### Parse errors (-1) treatment
 - Parse errors should be **excluded** from mean score calculations. They are not caused by perturbations — they reflect judge limitations or broken eval outputs.
 

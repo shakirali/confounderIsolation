@@ -156,23 +156,38 @@ def run_judge(
         bdir = batch_dir(judge_batch_id, label)
         return parse_scores(raw_results), bdir
 
+    # Separate valid responses from [ERROR] — don't send eval failures to the judge
+    valid_indices = [i for i, r in enumerate(responses) if r != "[ERROR]"]
+    valid_questions = [questions[i] for i in valid_indices]
+    valid_responses = [responses[i] for i in valid_indices]
+    error_count = len(questions) - len(valid_indices)
+    if error_count:
+        print(f"Skipping {error_count} [ERROR] eval responses — will be scored -1.")
+
     # Build input.jsonl into pending folder for inspection
     pending_dir = os.path.join("experiments", "doubleword_batches", f"pending_{label}")
     input_path = os.path.join(pending_dir, "input.jsonl")
-    build_judge_input(questions, responses, input_path, judge_model)
+    build_judge_input(valid_questions, valid_responses, input_path, judge_model)
 
     print(f"\nInspect input.jsonl at: {input_path}")
     input("Press Enter to submit the batch (Ctrl+C to cancel)...")
 
     raw_results, submitted_batch_id = submit_batch_from_file(
         input_jsonl_path=input_path,
-        num_requests=len(questions),
+        num_requests=len(valid_questions),
         completion_window=completion_window,
         content_only=True,
         label=label,
     )
     bdir = batch_dir(submitted_batch_id, label)
-    return parse_scores(raw_results), bdir
+
+    # Reassemble scores in original order — [ERROR] slots get -1
+    valid_scores = parse_scores(raw_results)
+    scores = [-1] * len(questions)
+    for i, score in zip(valid_indices, valid_scores):
+        scores[i] = score
+
+    return scores, bdir
 
 
 def score_jsonl(
