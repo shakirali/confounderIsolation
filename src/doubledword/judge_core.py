@@ -60,10 +60,14 @@ def load_jsonl_pairs(input_jsonl: str, output_jsonl: str) -> pd.DataFrame:
             # Strip /no_think prefix if present
             if user_content.startswith("/no_think\n"):
                 user_content = user_content[len("/no_think\n"):]
-            # Strip p1_format JSON instruction suffix — judge only needs the plain question
-            p1_suffix = '\nAnswer strictly in JSON format: {"answer": "your answer here"}'
-            if user_content.endswith(p1_suffix):
-                user_content = user_content[: -len(p1_suffix)]
+            # Strip p1_format / p1_format_soft JSON instruction suffix — judge only needs the plain question
+            for p1_suffix in (
+                '\nAnswer strictly in JSON format: {"answer": "your answer here"}',
+                '\nAnswer in JSON format: {"answer": "your answer here"}',
+            ):
+                if user_content.endswith(p1_suffix):
+                    user_content = user_content[: -len(p1_suffix)]
+                    break
             # Strip p5_fewshot preamble — extract only the final Q: line
             p5_prefix = "Q: Is the Great Wall of China visible from space?"
             if user_content.startswith(p5_prefix):

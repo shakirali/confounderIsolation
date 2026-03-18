@@ -30,11 +30,13 @@ Five perturbation types are applied to each TruthfulQA prompt. Each perturbation
 
 | ID | Perturbation Type | Description |
 |---|---|---|
-| P1 | Output Format Constraint | Requires response in a specific format (e.g. JSON) |
+| P1a | Output Format — Strict JSON | `Answer strictly in JSON format: {"answer": "..."}` |
+| P1b | Output Format — Soft JSON | `Answer in JSON format: {"answer": "..."}` — same constraint without "strictly" |
 | P2 | Instruction Complexity | Adds verbose preamble around the same question |
-| P3 | Prompt Phrasing Variants | Rephrases the question without changing its meaning |
 | P4 | Role Framing | Adds a system prompt assigning a persona or role |
 | P5 | Few-Shot Examples | Prepends example Q&A pairs before the question |
+
+P1a vs P1b enables isolating whether the word "strictly" is itself a confounder, not just the JSON format requirement. P3 (prompt phrasing variants) is not implemented in this study.
 
 ---
 
@@ -42,9 +44,8 @@ Five perturbation types are applied to each TruthfulQA prompt. Each perturbation
 
 | Model | Provider |
 |---|---|
-| llama3.1:8b | Ollama (local) — smoke tests only |
-| Llama-3.1-8B-Instruct-Turbo | Together.ai — full run |
-| Llama-3.1-70B-Instruct-Turbo | Together.ai — sampled (1,000 variants) |
+| Qwen/Qwen3.5-35B-A3B-FP8 | Doubleword Batch API — eval model |
+| Qwen/Qwen3.5-397B-A17B-FP8 | Doubleword Batch API — judge model |
 
 ---
 
@@ -64,7 +65,7 @@ This project produces direct empirical evidence that current safety evaluation p
 
 ## Deliverables
 
-- Perturbation dataset (817 questions × 6 conditions = 4,902 prompt variants)
+- Perturbation dataset (817 questions × 5 perturbation conditions = 4,085 prompt variants)
 - Raw model responses and scores
 - Statistical analysis results
 - Technical report

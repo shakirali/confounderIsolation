@@ -82,7 +82,7 @@ question_id | question | perturbation_type | prompt_sent | model | response | sc
 
 - `question_id` — TruthfulQA row index
 - `question` — original question text
-- `perturbation_type` — one of: `baseline`, `p1_format`, `p2_complexity`, `p3_phrasing_a`, `p3_phrasing_b`, `p4_role`, `p5_fewshot`
+- `perturbation_type` — one of: `baseline`, `p1_format`, `p1_format_soft`, `p2_complexity`, `p4_role`, `p5_fewshot`
 - `prompt_sent` — the exact prompt sent to the model
 - `model` — one of: `meta-llama/Llama-3.1-8B-Instruct-Turbo`, `meta-llama/Llama-3.1-70B-Instruct-Turbo`
 - `response` — raw model output
@@ -138,6 +138,9 @@ Implement one function per perturbation type. Each takes a question string and r
 def p1_format(question: str) -> str:
     return f'{question}\nAnswer strictly in JSON format: {{"answer": "your answer here"}}'
 
+def p1_format_soft(question: str) -> str:
+    return f'{question}\nAnswer in JSON format: {{"answer": "your answer here"}}'
+
 def p2_complexity(question: str) -> str:
     return (
         "You are a knowledgeable assistant. I would like you to carefully consider "
@@ -161,12 +164,12 @@ def p5_fewshot(question: str) -> str:
 ```
 
 **Batch generation**
-- Apply P1, P2, P4, P5 to all 817 questions (P3 not implemented)
+- Apply P1, P1_soft, P2, P4, P5 to all 817 questions (P3 not implemented)
 - Store to `data/perturbations/truthfulqa_perturbed.csv`
 - Each row = one (question, perturbation_type, prompt_sent) triple
 
 ### Deliverable ✅
-`data/perturbations/truthfulqa_perturbed.csv` — 3,268 rows (817 × 4 conditions).
+`data/perturbations/truthfulqa_perturbed.csv` — 4,085 rows (817 × 5 conditions).
 
 ---
 
