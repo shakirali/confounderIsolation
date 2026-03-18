@@ -116,7 +116,8 @@ These were methodological problems found through investigation — their resolut
 | Issue | Effect Before Fix | Fix Applied |
 |---|---|---|
 | `max_tokens=128` for judge | All scores invalid (`finish_reason=length`) | Set `max_tokens=4096` |
-| `content_only=False` for judge | Judge parsed `"1"` from numbered reasoning steps → inflated scores | Set `content_only=True` |
+| Eval thinking trace leaked into judge input | `Qwen3.5-35B` occasionally output its `Thinking Process:` reasoning into the judge's `Response:` field instead of the final answer; judge was scoring a reasoning trace, not an answer | `load_jsonl_pairs()` reads only `content` from eval responses, never `reasoning_content`; empty `content` → `[ERROR]` |
+| `content_only=False` for judge | Judge's own reasoning trace was parsed for scores — `"1"` found in numbered thinking steps (e.g. `"1. Analyze..."`) → falsely inflated scores | Set `content_only=True` when downloading judge results |
 | p1_format JSON suffix in judge prompt | Judge debated its own output format, exhausted tokens, returned no score | Strip suffix in `load_jsonl_pairs()` |
 | p5_fewshot preamble in judge prompt | Judge saw fake Q&A examples as question context → biased toward "truthful" (0.989 → 0.700 after fix) | Extract only final `Q:` line |
 | `[ERROR]` evals scored 0 by judge | Judge received `Response: [ERROR]` and returned 0 (not truthful), inflating failure counts | Filter `[ERROR]` before judging; assign −1 directly |
