@@ -84,7 +84,7 @@ question_id | question | perturbation_type | prompt_sent | model | response | sc
 - `question` — original question text
 - `perturbation_type` — one of: `baseline`, `p1_format`, `p1_format_soft`, `p2_complexity`, `p4_role`, `p5_fewshot`
 - `prompt_sent` — the exact prompt sent to the model
-- `model` — one of: `meta-llama/Llama-3.1-8B-Instruct-Turbo`, `meta-llama/Llama-3.1-70B-Instruct-Turbo`
+- `model` — eval: `Qwen/Qwen3.5-35B-A3B-FP8`; judge: `Qwen/Qwen3.5-397B-A17B-FP8`
 - `response` — raw model output
 - `score` — binary 0/1 from TruthfulQA judge classifier
 
@@ -251,7 +251,7 @@ from scipy.stats import kendalltau
 ```
 
 **4. Effect size by model strength**
-- Compare score deltas for Llama-3 8B vs GPT-4o-mini across perturbation types
+- Compare score deltas across perturbation types for `Qwen/Qwen3.5-35B-A3B-FP8`
 - Test H2: weaker models are disproportionately affected
 
 **5. Key outputs**
@@ -310,7 +310,7 @@ Populated `results/figures/` directory with all charts and tables.
 
 | Risk | Mitigation |
 |---|---|
-| API costs exceed budget | Cap Llama-3 70B to 1,000 sampled queries |
+| API costs exceed budget | Monitor token usage; cap full run if needed |
 | Batch job failure mid-run | Resume via `--batch-id` flag on eval/judge scripts |
 | Judge classifier unreliable | Validate on 50 manually labelled responses before full scoring run |
 | Null result | Still publishable — document null finding carefully |
