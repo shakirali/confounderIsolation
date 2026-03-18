@@ -204,11 +204,21 @@ def p5_fewshot(question: str) -> str:
 - p5_fewshot: 0 errors (down from 6) ✅
 - p4_role: 3 errors (unfixable — genuinely hard questions / broken eval outputs)
 
+**Eval [ERROR] breakdown by perturbation type (smoke test):**
+| Perturbation | [ERROR] count | Rate |
+|---|---|---|
+| p5_fewshot    | 29 / 100 | 29% |
+| p1_format     | 14 / 100 | 14% |
+| p4_role       | 13 / 100 | 13% |
+| p2_complexity |  4 / 100 |  4% |
+| baseline      |  0 / 100 |  0% |
+All caused by `finish_reason=length` — model exhausted 4,096 tokens on reasoning, produced no `content`.
+
 **Full evaluation** — ⏳ TODO
 
 | Model | Run size |
 |---|---|
-| `Qwen/Qwen3.5-35B-A3B-FP8` | All 3,268 variants |
+| `Qwen/Qwen3.5-35B-A3B-FP8` | All 4,085 variants (817 × 5 perturbation types) |
 
 **Scoring**
 - `src/doubledword/judge_doubleword.py` — score all responses via a separate batch job
