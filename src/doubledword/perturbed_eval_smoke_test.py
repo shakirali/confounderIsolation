@@ -47,6 +47,10 @@ def run_perturbed_smoke_test(
 
     prompts = df["prompt_sent"].tolist()
     system_prompts = [s if pd.notna(s) else None for s in df["system_prompt"].tolist()]
+    response_formats = [
+        {"type": "json_object"} if t == "p1_format" else None
+        for t in df["perturbation_type"].tolist()
+    ]
 
     if eval_batch_id:
         print(f"Downloading eval results from existing batch: {eval_batch_id}")
@@ -57,6 +61,7 @@ def run_perturbed_smoke_test(
             prompts,
             model=eval_model,
             system_prompts=system_prompts,
+            response_formats=response_formats,
             completion_window=completion_window,
             label="perturbed_eval",
         )
