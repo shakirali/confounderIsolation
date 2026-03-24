@@ -31,7 +31,23 @@ DEFAULT_COMPLETION_WINDOW = "1h"
 # openai/gpt-oss-20b                        25        $0.02          128k     Aug 2025
 # Qwen/Qwen3-VL-30B-A3B-Instruct-FP8       16        $0.05          256k     Oct 2025  (vision-language)
 # Qwen/Qwen3-VL-235B-A22B-Instruct-FP8     21        $0.10          256k     Sep 2025  (vision-language)
+# nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-NVFP4  36  $0.15/M       256k     Mar 2026  ← ARC_EVAL_MODEL
 DEFAULT_MODEL = "Qwen/Qwen3.5-35B-A3B-FP8"
+
+# ARC-Challenge experiment: canonical eval model (see agents/PLAN.md § ARC-Challenge)
+ARC_EVAL_MODEL = "nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-NVFP4"
+
+# Local folders for batch JSONL (input.jsonl + output.jsonl per batch_id_label/)
+DEFAULT_BATCH_ROOT = os.path.join("experiments", "doubleword_batches")
+ARC_BATCH_ROOT = os.path.join("experiments", "doubleword_batches", "arc")
+
+
+def model_uses_no_think_user_prefix(model: str) -> bool:
+    """Whether to prepend the Qwen-style ``/no_think`` line to the user message.
+
+    Nemotron models should receive the task prompt only (no ``/no_think``).
+    """
+    return "nemotron" not in model.lower()
 
 
 def get_client() -> OpenAI:
@@ -41,9 +57,10 @@ def get_client() -> OpenAI:
     return OpenAI(base_url=DOUBLEWORD_BASE_URL, api_key=api_key)
 
 
-def batch_dir(batch_id: str, label: str) -> str:
+def batch_dir(batch_id: str, label: str, batch_root: str | None = None) -> str:
     """Return the local directory path for a batch, matching existing dirs by batch_id prefix."""
-    base = os.path.join("experiments", "doubleword_batches")
+    base = batch_root or DEFAULT_BATCH_ROOT
+    os.makedirs(base, exist_ok=True)
     if os.path.isdir(base):
         for entry in os.listdir(base):
             if entry.startswith(batch_id):
@@ -51,7 +68,13 @@ def batch_dir(batch_id: str, label: str) -> str:
     return os.path.join(base, f"{batch_id}_{label}")
 
 
-def download_results(batch_id: str, num_requests: int, label: str = "batch", content_only: bool = False) -> list[str]:
+def download_results(
+    batch_id: str,
+    num_requests: int,
+    label: str = "batch",
+    content_only: bool = False,
+    batch_root: str | None = None,
+) -> list[str]:
     """Download results from a completed batch by ID, reordered by custom_id.
 
     Args:
@@ -70,7 +93,7 @@ def download_results(batch_id: str, num_requests: int, label: str = "batch", con
     )
     response.raise_for_status()
 
-    bdir = batch_dir(batch_id, label)
+    bdir = batch_dir(batch_id, label, batch_root=batch_root)
     os.makedirs(bdir, exist_ok=True)
     output_path = os.path.join(bdir, "output.jsonl")
     with open(output_path, "w") as f:
@@ -100,6 +123,7 @@ def _poll_and_download(
     num_requests: int,
     label: str,
     content_only: bool,
+    batch_root: str | None = None,
 ) -> tuple[list[str], str]:
     """Poll until batch completes then download results. Returns (responses, batch_id)."""
     client = get_client()
@@ -122,7 +146,9 @@ def _poll_and_download(
 
             time.sleep(poll_interval)
 
-    results = download_results(batch_id, num_requests, label=label, content_only=content_only)
+    results = download_results(
+        batch_id, num_requests, label=label, content_only=content_only, batch_root=batch_root
+    )
     return results, batch_id
 
 
@@ -133,12 +159,19 @@ def submit_batch(
     response_formats: list[dict | None] | None = None,
     completion_window: str = DEFAULT_COMPLETION_WINDOW,
     max_tokens: int = 4096,
-    enable_thinking: bool = True,
+    no_think_prefix: bool = False,
     content_only: bool = False,
     label: str = "batch",
+    batch_root: str | None = None,
 ) -> tuple[list[str], str]:
     """
     Submit prompts as a Doubleword batch job and return responses in order.
+
+    Args:
+        batch_root: Directory containing `<batch_id>_<label>/` folders. Defaults to
+            `experiments/doubleword_batches`. Use `ARC_BATCH_ROOT` (`experiments/doubleword_batches/arc`) for ARC-Challenge runs.
+        no_think_prefix: If True, prepend ``/no_think`` for models that use that Qwen-style convention
+            (ignored for Nemotron — see ``model_uses_no_think_user_prefix``). Default False: raw user text only.
 
     Returns:
         Tuple of (response strings, batch_id). Responses are same order as input;
@@ -151,7 +184,8 @@ def submit_batch(
         messages = []
         if system_prompts and system_prompts[i]:
             messages.append({"role": "system", "content": system_prompts[i]})
-        user_content = f"/no_think\n{prompt}" if not enable_thinking else prompt
+        use_no_think = no_think_prefix and model_uses_no_think_user_prefix(model)
+        user_content = f"/no_think\n{prompt}" if use_no_think else prompt
         messages.append({"role": "user", "content": user_content})
 
         body: dict = {
@@ -184,14 +218,16 @@ def submit_batch(
     )
     print(f"Batch created: {batch.id} (window={completion_window})")
 
-    bdir = batch_dir(batch.id, label)
+    bdir = batch_dir(batch.id, label, batch_root=batch_root)
     os.makedirs(bdir, exist_ok=True)
     input_path = os.path.join(bdir, "input.jsonl")
     with open(input_path, "wb") as f:
         f.write(jsonl_bytes)
     print(f"Saved input → {input_path}")
 
-    return _poll_and_download(batch.id, len(prompts), label=label, content_only=content_only)
+    return _poll_and_download(
+        batch.id, len(prompts), label=label, content_only=content_only, batch_root=batch_root
+    )
 
 
 def submit_batch_from_file(
@@ -200,6 +236,7 @@ def submit_batch_from_file(
     completion_window: str = DEFAULT_COMPLETION_WINDOW,
     content_only: bool = False,
     label: str = "batch",
+    batch_root: str | None = None,
 ) -> tuple[list[str], str]:
     """
     Submit a pre-built input.jsonl as a Doubleword batch job.
@@ -212,11 +249,14 @@ def submit_batch_from_file(
         completion_window: "24h" or "1h".
         content_only: If True, only return message.content from responses.
         label: Batch directory label.
+        batch_root: Where to place `<batch_id>_<label>/` after submit (default: `DEFAULT_BATCH_ROOT`).
 
     Returns:
         Tuple of (response strings, batch_id).
     """
     client = get_client()
+    root = batch_root or DEFAULT_BATCH_ROOT
+    os.makedirs(root, exist_ok=True)
 
     with open(input_jsonl_path, "rb") as f:
         jsonl_bytes = f.read()
@@ -237,8 +277,10 @@ def submit_batch_from_file(
 
     # Rename pending_<label>/ → <batch_id>_<label>/
     pending_dir = os.path.dirname(os.path.abspath(input_jsonl_path))
-    final_dir = os.path.join("experiments", "doubleword_batches", f"{batch.id}_{label}")
+    final_dir = os.path.join(root, f"{batch.id}_{label}")
     os.rename(pending_dir, final_dir)
     print(f"Renamed batch folder → {final_dir}")
 
-    return _poll_and_download(batch.id, num_requests, label=label, content_only=content_only)
+    return _poll_and_download(
+        batch.id, num_requests, label=label, content_only=content_only, batch_root=batch_root
+    )

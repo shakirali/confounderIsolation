@@ -25,3 +25,6 @@ results/figures/*.csv
 # IDE
 .vscode/
 .idea/
+
+# Local HuggingFace cache (if created under repo)
+.hf_cache/

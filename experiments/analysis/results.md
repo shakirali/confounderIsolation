@@ -26,6 +26,36 @@
 
 ---
 
+## ARC-Challenge (test split)
+
+**Eval model (canonical):** `nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-NVFP4` — constant `ARC_EVAL_MODEL` in `src/doubledword/doubleword_client.py`; default for `arc_baseline_eval.py` / `arc_perturbed_eval.py`. Earlier Qwen 35B batches below are comparison smokes.
+
+**Data:**
+- `data/baseline/arc_challenge_test_raw.csv` — 1,172 rows, HF `allenai/ai2_arc` config `ARC-Challenge`, `split=test`. Baseline user message in `prompt`; gold label in `answerKey`.
+- `data/perturbations/arc_challenge_test_perturbed.csv` — 5,860 rows (5 perturbation types × 1,172). Columns include `prompt_sent`, `system_prompt`, `response_format`, `answerKey`, `arc_id`, `choices_json`, `question` (stem).
+
+### Baseline eval (smoke n=10)
+
+| Batch | ID | Notes |
+|---|---|---|
+| Eval (`/no_think`) | `bcb4a38f-00d2-490b-96fa-30b1b487f051` | 24h, `max_tokens=4096` — user messages prefixed with `/no_think` |
+| Eval (thinking on) | `4ddea5ae-e84d-4a8b-a8d1-43eca7f1df53` | same; **without `--no-think`** (raw prompt); all rows include `reasoning_content`; `custom_id=5` `finish_reason=length`, empty `content` |
+| Eval (superseded) | `09e4d6b3-a362-480c-bf57-0cfa5364ae29` | `max_tokens=512` — most rows empty `content` |
+| Eval (Nemotron, n=10, `/no_think`) | `615b7d20-b325-4e80-b592-027b3777fbba` | Default `arc_baseline_eval.py` — all `stop`, non-empty `content`; `message.reasoning` often present |
+| Eval (Nemotron, n=10, raw prompt) | `0861314c-4091-4c14-8d7f-09e7acae6289` | default `arc_baseline_eval.py` (no `--no-think`); **`scripts/score_arc_mcq.py --baseline` → 10/10** (0 parse fails); longer wall time (~8 min vs ~4.5 min for `615b7d20`) |
+
+**Protocol:** Primary ARC runs use **Nemotron 120B** with the **raw task prompt** (no `/no_think` line in user text; enforced in `submit_batch` for model ids containing `Nemotron`). Historical batch `615b7d20-...` still has `/no_think` in saved `input.jsonl`. Qwen ablations: `bcb4a38f-...` (`/no_think`) vs `4ddea5ae-...` (thinking).
+
+**Scoring:** `uv run python scripts/score_arc_mcq.py --output-jsonl <batch>/output.jsonl --baseline` (or `--perturbed --n-questions K`). Optional `--out-csv`. Uses `content` then `reasoning_content` unless `--content-only`.
+
+**615b7d20 vs 0861314c (crude first-letter note):** older manual parse had 9/10 vs 10/10; official scorer on `0861314c` is **10/10**.
+
+**Perturbed eval (smoke n=10, Nemotron):** batch `dde1d1d9-eedf-4251-96de-ab1f178a947e` → `experiments/doubleword_batches/arc/dde1d1d9-eedf-4251-96de-ab1f178a947e_arc_perturbed_eval/`. **24h** window, `max_tokens=4096`, no `/no_think` in user text. **`score_arc_mcq.py --perturbed --n-questions 10` → 49/50** (0 parse fails); single error: `question_id=5`, `p4_role`, gold **B**, predicted **D**. **Stored:** `experiments/results/raw/arc_perturbed_n10_dde1d1d9_scored.csv`.
+
+**ARC scored exports (`experiments/results/raw/`):** `arc_baseline_n10_0861314c_scored.csv` (10/10), `arc_baseline_n10_615b7d20_scored.csv` (9/10), `arc_perturbed_n10_dde1d1d9_scored.csv` (49/50).
+
+---
+
 ## Phase 1: Baseline
 
 **100 questions, unperturbed, plain prompts.**

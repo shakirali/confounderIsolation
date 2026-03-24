@@ -34,7 +34,8 @@
 | Tool | Details |
 |---|---|
 | Doubleword | Hosted batch inference API — OpenAI-compatible at `https://api.doubleword.ai/v1` |
-| Eval model | `Qwen/Qwen3.5-35B-A3B-FP8` |
+| Eval model (TruthfulQA) | `Qwen/Qwen3.5-35B-A3B-FP8` |
+| Eval model (ARC-Challenge) | `nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-NVFP4` (`ARC_EVAL_MODEL` in `doubleword_client.py`) |
 | Judge model | `Qwen/Qwen3.5-397B-A17B-FP8` |
 | Client | `openai` Python library with `base_url=DOUBLEWORD_BASE_URL` |
 

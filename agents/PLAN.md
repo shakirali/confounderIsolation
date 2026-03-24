@@ -151,7 +151,7 @@ uv pip install -r requirements.txt
 
 ---
 
-## Phase 3: Model Evaluations ⏳ IN PROGRESS
+## Phase 3: Model Evaluations ✅ DONE
 
 **Goal:** Query all models on all perturbation variants and score responses via Doubleword batch.
 
@@ -334,6 +334,36 @@ Populated `results/figures/` directory with all charts and tables.
 - [ ] Push full repository to GitHub
 - [ ] Write Alignment Forum post summarising findings
 - [ ] Share with BlueDot cohort for feedback
+
+---
+
+## ARC-Challenge experiment
+
+**Batch storage:** Doubleword batch folders (`<batch_id>_<label>/` with `input.jsonl` and `output.jsonl`) live under **`experiments/doubleword_batches/arc/`**. ARC eval scripts should pass `batch_root=ARC_BATCH_ROOT` from [`src/doubledword/doubleword_client.py`](../src/doubledword/doubleword_client.py). Other benchmarks (e.g. TruthfulQA) use sibling folders under `experiments/doubleword_batches/`.
+
+### Eval model (canonical)
+- **Primary ARC eval model:** **`nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-NVFP4`** (NVIDIA Nemotron 3 Super 120B on Doubleword).
+- **Code:** `ARC_EVAL_MODEL` in [`src/doubledword/doubleword_client.py`](../src/doubledword/doubleword_client.py); default for [`arc_baseline_eval.py`](../src/doubledword/arc_baseline_eval.py) and [`arc_perturbed_eval.py`](../src/doubledword/arc_perturbed_eval.py). Override with `--eval-model` if needed.
+- **Scoring:** deterministic vs `answerKey` (no LLM judge). Same model is fine for eval-only; no second judge pass.
+- **Earlier smokes** used `Qwen/Qwen3.5-35B-A3B-FP8` for comparison; treat as exploratory unless rerun under Nemotron.
+
+### Data ✅
+- Loader: [`src/load_arc_challenge.py`](../src/load_arc_challenge.py); MCQ formatter: [`src/arc_prompts.py`](../src/arc_prompts.py).
+- Raw test split: **`data/baseline/arc_challenge_test_raw.csv`** — 1,172 rows (`allenai/ai2_arc`, `ARC-Challenge`, `split=test`). Columns: `question_id`, `arc_id`, `question` (stem), `choices_json`, `answerKey`, `prompt` (baseline user message).
+- Regenerate: `uv run python src/load_arc_challenge.py`
+- Perturbations: [`src/generate_arc_perturbations.py`](../src/generate_arc_perturbations.py) → **`data/perturbations/arc_challenge_test_perturbed.csv`** — 5,860 rows (1,172 × 5 types). Same p1–p4 as TruthfulQA on full MCQ `prompt`; p5 uses two science MCQ few-shots then the target item.
+- Regenerate perturbed: `uv run python src/generate_arc_perturbations.py`
+
+### Pipeline ⏳
+- **Doubleword eval — wired.** ARC batch root: `experiments/doubleword_batches/arc/`.
+  - **Canonical ARC eval setting:** **Nemotron 120B** (`ARC_EVAL_MODEL`) + **raw prompt only** (no `/no_think`; `model_uses_no_think_user_prefix` in `doubleword_client.py`) + `max_tokens=4096` + `24h` (default `arc_*_eval.py`).
+  - **Baseline smoke (n=10) Nemotron ✅ (historical: `input.jsonl` used `/no_think`)** — batch `615b7d20-b325-4e80-b592-027b3777fbba` → `experiments/doubleword_batches/arc/615b7d20-b325-4e80-b592-027b3777fbba_arc_baseline_eval/`. All 10 `stop`, non-empty `content`; optional trace in `message.reasoning`.
+  - **Nemotron n=10 raw user message ✅** — batch `0861314c-4091-4c14-8d7f-09e7acae6289` (raw prompt; historically submitted with old `--think` flag before CLI used opt-in `--no-think` only) → `experiments/doubleword_batches/arc/0861314c-4091-4c14-8d7f-09e7acae6289_arc_baseline_eval/`. All 10 `stop`, non-empty `content`, `message.reasoning` populated; **~8 min** wall time vs **~4.5 min** for `615b7d20`. Crude first-letter-in-`content` vs gold: **10/10** vs **9/10** for `615b7d20` (`custom_id=5`: D vs gold B; 0861314c **B**).
+  - **Qwen 35B smokes (exploratory):** `/no_think` batch `bcb4a38f-...`; thinking-on `4ddea5ae-...` (ablation). Superseded low-token: `09e4d6b3-...`.
+  - **Perturbed smoke (n=10) Nemotron ✅** — batch `dde1d1d9-eedf-4251-96de-ab1f178a947e` → `experiments/doubleword_batches/arc/dde1d1d9-eedf-4251-96de-ab1f178a947e_arc_perturbed_eval/` (`arc_perturbed_eval.py --n 10 --window 24h`). 50 rows; `score_arc_mcq.py --perturbed --n-questions 10` → **49/50** (`question_id=5`, `p4_role`: B vs D). Scored rows: [`experiments/results/raw/arc_perturbed_n10_dde1d1d9_scored.csv`](../experiments/results/raw/arc_perturbed_n10_dde1d1d9_scored.csv).
+  - Next: baseline `--n 100`, full `n=1172`; perturbed `--n 100` then full 5,860 rows.
+  - Generic: [`src/doubledword/baseline_eval_smoke_test_doubleword.py`](../src/doubledword/baseline_eval_smoke_test_doubleword.py) / [`perturbed_eval_smoke_test.py`](../src/doubledword/perturbed_eval_smoke_test.py) with `--input-csv`, `--batch-root`, `--max-tokens`, `--no-think`, etc.
+- **Deterministic MCQ scoring** ✅ — [`scripts/score_arc_mcq.py`](../scripts/score_arc_mcq.py): `--baseline` or `--perturbed --n-questions K`, optional `--out-csv`. Joins `output.jsonl` by `custom_id` to the same CSV slice as the eval script; `correct` ∈ {1, 0, -1}.
 
 ---
 

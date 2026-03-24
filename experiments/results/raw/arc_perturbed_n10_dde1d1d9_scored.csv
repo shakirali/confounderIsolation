@@ -1,0 +1,71 @@
+custom_id,question_id,arc_id,answerKey,predicted,correct,parse_method,raw_response,perturbation_type
+0,0,Mercury_7175875,C,C,1,json,"{
+  ""answer"": ""C""
+}",p1_format
+1,0,Mercury_7175875,C,C,1,json,"{""answer"": ""C""}",p1_format_soft
+2,0,Mercury_7175875,C,C,1,heuristic,C,p2_complexity
+3,0,Mercury_7175875,C,C,1,heuristic,C,p4_role
+4,0,Mercury_7175875,C,C,1,heuristic,C,p5_fewshot
+5,1,Mercury_SC_409171,B,B,1,json,"{
+  ""answer"": ""B""
+}",p1_format
+6,1,Mercury_SC_409171,B,B,1,json,"{""answer"": ""B""}",p1_format_soft
+7,1,Mercury_SC_409171,B,B,1,heuristic,B,p2_complexity
+8,1,Mercury_SC_409171,B,B,1,heuristic,B,p4_role
+9,1,Mercury_SC_409171,B,B,1,heuristic,B,p5_fewshot
+10,2,Mercury_SC_408547,C,C,1,json,"{
+  ""answer"": ""C""
+}",p1_format
+11,2,Mercury_SC_408547,C,C,1,json,"{""answer"": ""C""}",p1_format_soft
+12,2,Mercury_SC_408547,C,C,1,heuristic,C,p2_complexity
+13,2,Mercury_SC_408547,C,C,1,heuristic,C,p4_role
+14,2,Mercury_SC_408547,C,C,1,heuristic,C,p5_fewshot
+15,3,Mercury_407327,D,D,1,json,"{
+  ""answer"": ""D""
+}",p1_format
+16,3,Mercury_407327,D,D,1,json,"{""answer"": ""D""}",p1_format_soft
+17,3,Mercury_407327,D,D,1,heuristic,D,p2_complexity
+18,3,Mercury_407327,D,D,1,heuristic,D,p4_role
+19,3,Mercury_407327,D,D,1,heuristic,D,p5_fewshot
+20,4,MCAS_2006_9_44,D,D,1,json,"{
+  ""answer"": ""D""
+}",p1_format
+21,4,MCAS_2006_9_44,D,D,1,json,"{""answer"": ""D""}",p1_format_soft
+22,4,MCAS_2006_9_44,D,D,1,heuristic,D,p2_complexity
+23,4,MCAS_2006_9_44,D,D,1,heuristic,D,p4_role
+24,4,MCAS_2006_9_44,D,D,1,heuristic,D,p5_fewshot
+25,5,Mercury_7270393,B,B,1,json,"{
+  ""answer"": ""B""
+}",p1_format
+26,5,Mercury_7270393,B,B,1,json,"{""answer"": ""B""}",p1_format_soft
+27,5,Mercury_7270393,B,B,1,heuristic,B,p2_complexity
+28,5,Mercury_7270393,B,D,0,heuristic,D,p4_role
+29,5,Mercury_7270393,B,B,1,heuristic,Answer: B,p5_fewshot
+30,6,MCAS_2014_5_7,C,C,1,json,"{
+  ""answer"": ""C""
+}",p1_format
+31,6,MCAS_2014_5_7,C,C,1,json,"{""answer"": ""C""}",p1_format_soft
+32,6,MCAS_2014_5_7,C,C,1,heuristic,C,p2_complexity
+33,6,MCAS_2014_5_7,C,C,1,heuristic,C,p4_role
+34,6,MCAS_2014_5_7,C,C,1,heuristic,C,p5_fewshot
+35,7,Mercury_7086660,C,C,1,json,"{
+  ""answer"": ""C""
+}",p1_format
+36,7,Mercury_7086660,C,C,1,json,"{""answer"": ""C""}",p1_format_soft
+37,7,Mercury_7086660,C,C,1,heuristic,C,p2_complexity
+38,7,Mercury_7086660,C,C,1,heuristic,C,p4_role
+39,7,Mercury_7086660,C,C,1,heuristic,C,p5_fewshot
+40,8,Mercury_7168805,B,B,1,json,"{
+  ""answer"": ""B""
+}",p1_format
+41,8,Mercury_7168805,B,B,1,json,"{""answer"": ""B""}",p1_format_soft
+42,8,Mercury_7168805,B,B,1,heuristic,B,p2_complexity
+43,8,Mercury_7168805,B,B,1,heuristic,B,p4_role
+44,8,Mercury_7168805,B,B,1,heuristic,B,p5_fewshot
+45,9,MCAS_2003_8_11,A,A,1,json,"{
+  ""answer"": ""A""
+}",p1_format
+46,9,MCAS_2003_8_11,A,A,1,json,"{""answer"": ""A""}",p1_format_soft
+47,9,MCAS_2003_8_11,A,A,1,heuristic,A,p2_complexity
+48,9,MCAS_2003_8_11,A,A,1,heuristic,A,p4_role
+49,9,MCAS_2003_8_11,A,A,1,heuristic,Answer: A,p5_fewshot
