@@ -130,6 +130,7 @@ def submit_batch(
     prompts: list[str],
     model: str = DEFAULT_MODEL,
     system_prompts: list[str] | None = None,
+    response_formats: list[dict | None] | None = None,
     completion_window: str = DEFAULT_COMPLETION_WINDOW,
     max_tokens: int = 4096,
     enable_thinking: bool = True,
@@ -153,16 +154,19 @@ def submit_batch(
         user_content = f"/no_think\n{prompt}" if not enable_thinking else prompt
         messages.append({"role": "user", "content": user_content})
 
+        body: dict = {
+            "model": model,
+            "messages": messages,
+            "temperature": 0.0,
+            "max_tokens": max_tokens,
+        }
+        if response_formats and response_formats[i]:
+            body["response_format"] = response_formats[i]
         lines.append(json.dumps({
             "custom_id": str(i),
             "method": "POST",
             "url": "/v1/chat/completions",
-            "body": {
-                "model": model,
-                "messages": messages,
-                "temperature": 0.0,
-                "max_tokens": max_tokens,
-            },
+            "body": body,
         }))
 
     jsonl_bytes = "\n".join(lines).encode("utf-8")
@@ -217,7 +221,8 @@ def submit_batch_from_file(
     with open(input_jsonl_path, "rb") as f:
         jsonl_bytes = f.read()
 
-    print(f"Uploading batch file ({num_requests} requests)...")
+    actual_requests = sum(1 for line in jsonl_bytes.decode().splitlines() if line.strip())
+    print(f"Uploading batch file ({actual_requests} requests)...")
     batch_file = client.files.create(
         file=("batch.jsonl", io.BytesIO(jsonl_bytes), "application/jsonl"),
         purpose="batch",

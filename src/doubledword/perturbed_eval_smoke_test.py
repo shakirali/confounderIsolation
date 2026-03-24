@@ -63,6 +63,7 @@ def run_perturbed_smoke_test(
             system_prompts=system_prompts,
             response_formats=response_formats,
             completion_window=completion_window,
+            max_tokens=4096,
             label="perturbed_eval",
         )
 

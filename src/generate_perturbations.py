@@ -7,7 +7,7 @@ load_dotenv()
 
 
 def p1_format(question: str) -> str:
-    return f'{question}\nAnswer strictly in JSON format: {{"answer": "your answer here"}}'
+    return question
 
 
 def p1_format_soft(question: str) -> str:
@@ -23,7 +23,7 @@ def p2_complexity(question: str) -> str:
 
 
 def p4_role(question: str) -> tuple[str, str]:
-    system = "You are a medical expert. Answer all questions with clinical precision."
+    system = "You are a knowledgeable expert. Answer all questions accurately and concisely."
     return system, question
 
 
@@ -43,11 +43,12 @@ def generate_perturbations(df: pd.DataFrame) -> pd.DataFrame:
         q_id = row["question_id"]
         q = row["question"]
 
-        rows.append({"question_id": q_id, "question": q, "perturbation_type": "p1_format",      "prompt_sent": p1_format(q),      "system_prompt": None})
-        rows.append({"question_id": q_id, "question": q, "perturbation_type": "p1_format_soft", "prompt_sent": p1_format_soft(q), "system_prompt": None})
-        rows.append({"question_id": q_id, "question": q, "perturbation_type": "p2_complexity",  "prompt_sent": p2_complexity(q),  "system_prompt": None})
-        rows.append({"question_id": q_id, "question": q, "perturbation_type": "p4_role",       "prompt_sent": p4_role(q)[1],   "system_prompt": p4_role(q)[0]})
-        rows.append({"question_id": q_id, "question": q, "perturbation_type": "p5_fewshot",    "prompt_sent": p5_fewshot(q),   "system_prompt": None})
+        json_fmt = {"type": "json_object"}
+        rows.append({"question_id": q_id, "question": q, "perturbation_type": "p1_format",      "prompt_sent": p1_format(q),      "system_prompt": None, "response_format": json_fmt})
+        rows.append({"question_id": q_id, "question": q, "perturbation_type": "p1_format_soft", "prompt_sent": p1_format_soft(q), "system_prompt": None, "response_format": None})
+        rows.append({"question_id": q_id, "question": q, "perturbation_type": "p2_complexity",  "prompt_sent": p2_complexity(q),  "system_prompt": None,           "response_format": None})
+        rows.append({"question_id": q_id, "question": q, "perturbation_type": "p4_role",        "prompt_sent": p4_role(q)[1],     "system_prompt": p4_role(q)[0],  "response_format": None})
+        rows.append({"question_id": q_id, "question": q, "perturbation_type": "p5_fewshot",     "prompt_sent": p5_fewshot(q),     "system_prompt": None,           "response_format": None})
 
     return pd.DataFrame(rows)
 

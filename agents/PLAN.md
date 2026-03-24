@@ -1,6 +1,8 @@
 # Technical Implementation Plan
 
 > **Note for Claude:** Keep this document up to date as you work. After completing any task or phase, update the status markers (✅ / ⏳ / ❌), record batch IDs, result file paths, and any decisions made. This is the source of truth for progress across conversations.
+>
+> **Results tracking:** All batch IDs, scores, and experiment outcomes are recorded in **`experiments/analysis/results.md`** — the single source of truth for all results. Update that file after every eval/judge run.
 
 ---
 
@@ -179,25 +181,73 @@ uv pip install -r requirements.txt
 - Output: `experiments/doubleword_batches/08d8e02e-f4c7-486e-b4bf-dc272c553d07_perturbed_eval/output.jsonl`
 - 49/50 valid (1 p5_fewshot hit token limit → [ERROR])
 - All formats correct: p1_format returns JSON (API-enforced), p1_format_soft returns JSON (prompt), others plain prose
-- Judge scoring: ❌ TODO
+- Judge batch ID: `4856c7cf-5963-4d9a-9583-7d6ac1e96172` (fixed custom_id alignment bug before this run)
+- Judge results: mean=0.980, 48 truthful, 1 wrong (p1_format_soft "Georgia" for peaches question), 1 error
 
-**n=100 smoke test** — ❌ TODO
-- 500 rows (100 questions × 5 perturbation types)
-- Run: `PYTHONPATH=src/doubledword .venv/bin/python3 src/doubledword/perturbed_eval_smoke_test.py`
+### Bugs found and fixed (2026-03-23)
+- **response_format bug** — `p1_format_soft` was incorrectly getting `response_format: json_object`. Fixed in `perturbed_eval_smoke_test.py`.
+- **p2_complexity preamble not stripped** — judge was receiving full preamble instead of plain question. Fixed in `judge_core.py`.
+- **judge custom_id misalignment** — judge re-indexed from 0, causing custom_ids to drift after ERROR rows. Fixed: judge now uses original eval custom_ids.
+- **misleading upload log** — `submit_batch_from_file` logged `num_requests` (array size) not actual file lines. Fixed in `doubleword_client.py`.
 
-**Full evaluation** — ❌ TODO
+**n=100 smoke test (attempt 1)** — ⚠️ STALE (max_tokens too low)
+- Eval batch ID: `a4eb754d-3bae-4a0c-81ef-99ef69cfc5db` (500 rows, 100 questions × 5 perturbation types)
+- 65/500 empty content (finish_reason=length) — model exhausted 4096 tokens on reasoning
+- Breakdown: p5_fewshot 28, p4_role 12, p1_format_soft 11, p2_complexity 7, p1_format 7
+- Fix: increased max_tokens from 4096 → 16384 in `perturbed_eval_smoke_test.py`
 
-| Model | Run size |
-|---|---|
-| `Qwen/Qwen3.5-35B-A3B-FP8` | All 4,085 variants (817 × 5 perturbation types) |
+**n=100 smoke test (attempt 2)** — ⚠️ STALE / INCOMPLETE
+- Eval batch ID: `aac5de8f-d769-4e1c-9e51-2dea31909f0f` (500 rows, max_tokens=16384)
+- 35/500 empty content — model still looping with 16384 tokens
+- No judge run — superseded by triple-run methodology
 
-**Scoring**
-- `src/doubledword/judge_doubleword.py` — score all responses via a separate batch job
-- Judge model: `Qwen/Qwen3.5-397B-A17B-FP8`
-- Scores parsed from `output.jsonl` in each judge batch folder at analysis time
+**Full evaluation — triple-run methodology** — ✅ DONE
+- Reasoning model non-determinism: model exhausts `max_tokens=4096` on certain questions → empty `content`
+- Solution: run 3× at max_tokens=4096; keep only pairs with non-empty content in all 3 runs
+- Eval Run 1 batch ID: `eda159fa-8d1f-4c46-90bc-d0296b3525ad` (4085 rows)
+- Eval Run 2 batch ID: `c3531d4c-59c6-4cef-ad88-98aa25c4a49b` (4085 rows)
+- Eval Run 3 batch ID: `35f2c19b-33cd-4a9d-ace9-17eec15ad3fe` (4085 rows)
+- Stable dataset built: `data/stable_eval.csv` — 2,806/4,085 stable pairs (68.7%), 259/817 questions fully stable (all 5 types)
+- Unstable pairs by type: p5_fewshot 60.2%, p4_role 27.8%, p1_format_soft 29.7%, p2_complexity 21.5%, p1_format 17.3%
+
+**Judge scoring on stable dataset** — ✅ DONE
+- Judge batch ID: `98fac664-9e70-4d09-8c70-a028fa61aed5` (2806 requests, completion_window=24h)
+- Output: `experiments/doubleword_batches/98fac664-9e70-4d09-8c70-a028fa61aed5_stable_judge/output.jsonl`
+- 49 judge parse errors (397B model ignores `/no_think`, exhausts 4096 tokens on thinking) — manually scored, saved to `manual_scores.csv`
+- Final scores (all 2806 valid, 0 errors after manual scoring): p1_format=0.981, p1_format_soft=0.967, p2_complexity=0.992, p4_role=0.997, p5_fewshot=0.994, overall=0.985
+- All types score higher than 100-question baseline (0.960) — selection bias in stable dataset (confident questions only)
+
+**Full baseline eval — all 817 questions** — ✅ DONE
+- Eval batch ID: `ddbdabb1-97c3-49dc-b1fc-702d77175ef0` (817 questions, max_tokens=4096, 24h window)
+- 96/817 empty (finish_reason=length) — same reasoning-loop issue as perturbed eval
+- Judge batch ID: `7a848d23-dba2-4409-87c2-22ba66660fd0` (721 requests, 24h window, $0.99)
+- 15 judge parse errors; 706 valid scores; mean=0.977
+
+**Paired comparison (matched question IDs)** — ✅ DONE
+- 701 paired question IDs, 2,700 stable pairs after intersecting valid baseline + stable dataset
+- **Key finding 1:** Perturbations have negligible effect on truthfulness of generated responses (all Δ within ±0.01)
+- **Key finding 2:** Perturbations strongly affect response generation stability — p5_fewshot caused 60.2% of responses to be empty vs 17.3% for p1_format
+
+| Perturbation | n | Baseline mean | Perturb mean | Δ |
+|---|---|---|---|---|
+| p1_format | 652 | 0.982 | 0.983 | +0.002 |
+| p1_format_soft | 546 | 0.982 | 0.976 | −0.005 |
+| p2_complexity | 619 | 0.985 | 0.994 | +0.008 |
+| p4_role | 568 | 0.991 | 0.996 | +0.005 |
+| p5_fewshot | 315 | 0.990 | 0.994 | +0.003 |
+| **Overall** | **2700** | **0.986** | **0.988** | **+0.003** |
+
+**Fully-paired dataset** — ✅ DONE
+- `experiments/analysis/paired_scores.csv` — 255 questions with all 6 scores valid (baseline + 5 perturbation types)
+- Binding constraint: p5_fewshot unstable for 492/817 questions; any question missing any perturbation type is excluded
+- Mean scores: baseline=0.996, p1_format=0.996, p1_format_soft=0.988, p2_complexity=0.996, p4_role=1.000, p5_fewshot=0.996
+- Manual scores for 49 perturbed judge failures included where applicable (17/44 affected question IDs appear in CSV)
 
 ### Deliverable
-`experiments/doubleword_batches/<judge_batch_id>_perturbed_judge/output.jsonl` — judge responses for all variants.
+`data/stable_eval.csv` — 2,806 stable (question, perturbation_type) pairs with run-1 responses. ✅
+`experiments/doubleword_batches/98fac664-9e70-4d09-8c70-a028fa61aed5_stable_judge/output.jsonl` — judge responses. ✅
+`experiments/doubleword_batches/98fac664-9e70-4d09-8c70-a028fa61aed5_stable_judge/manual_scores.csv` — 49 manually scored cases. ✅
+`experiments/analysis/paired_scores.csv` — 255 fully-paired questions, all 6 scores valid. ✅
 
 ---
 
