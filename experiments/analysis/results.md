@@ -46,13 +46,54 @@
 
 **Protocol:** Primary ARC runs use **Nemotron 120B** with the **raw task prompt** (no `/no_think` line in user text; enforced in `submit_batch` for model ids containing `Nemotron`). Historical batch `615b7d20-...` still has `/no_think` in saved `input.jsonl`. Qwen ablations: `bcb4a38f-...` (`/no_think`) vs `4ddea5ae-...` (thinking).
 
-**Scoring:** `uv run python scripts/score_arc_mcq.py --output-jsonl <batch>/output.jsonl --baseline` (or `--perturbed --n-questions K`). Optional `--out-csv`. Uses `content` then `reasoning_content` unless `--content-only`.
+**Scoring:** `uv run python scripts/score_arc_mcq.py --output-jsonl <batch>/output.jsonl --baseline` (or `--perturbed --n-questions K`). Optional `--out-csv`. Gold `answerKey` normalized from **A–D** or **1–4** (HF option index). Text parsed from `message.content`; if empty, from `reasoning_content` **unless** `finish_reason == "length"` (then no trace fallback — leave as parse fail). Pass `--content-only` to use `content` only.
 
 **615b7d20 vs 0861314c (crude first-letter note):** older manual parse had 9/10 vs 10/10; official scorer on `0861314c` is **10/10**.
 
 **Perturbed eval (smoke n=10, Nemotron):** batch `dde1d1d9-eedf-4251-96de-ab1f178a947e` → `experiments/doubleword_batches/arc/dde1d1d9-eedf-4251-96de-ab1f178a947e_arc_perturbed_eval/`. **24h** window, `max_tokens=4096`, no `/no_think` in user text. **`score_arc_mcq.py --perturbed --n-questions 10` → 49/50** (0 parse fails); single error: `question_id=5`, `p4_role`, gold **B**, predicted **D**. **Stored:** `experiments/results/raw/arc_perturbed_n10_dde1d1d9_scored.csv`.
 
-**ARC scored exports (`experiments/results/raw/`):** `arc_baseline_n10_0861314c_scored.csv` (10/10), `arc_baseline_n10_615b7d20_scored.csv` (9/10), `arc_perturbed_n10_dde1d1d9_scored.csv` (49/50).
+**Baseline eval (Nemotron n=100):** batch `ff691446-561c-4955-9821-395715d402ad` → `experiments/doubleword_batches/arc/ff691446-561c-4955-9821-395715d402ad_arc_baseline_eval/output.jsonl`. **24h**, raw prompt, `max_tokens=4096`. **`score_arc_mcq.py --baseline` → 96/99 parsed** (accuracy 0.970 on parsed); **1** parse fail (`correct=-1`), **3** wrong (`correct=0`).
+
+| Outcome | `custom_id` | `question_id` | Gold | Pred | Note |
+|---|---|---|---|---|---|
+| Wrong | 5 | 5 | B | D | DFTD MCQ |
+| Wrong | 49 | 49 | A | B | Learned behavior |
+| Wrong | 54 | 54 | C | B | Europa cracking |
+| Parse fail | 70 | 70 | A | (none) | `finish_reason: "length"`, empty `content` |
+
+**Stored:** `experiments/results/raw/arc_baseline_n100_ff691446_scored.csv`.
+
+**Perturbed eval (n=100 × 5 types, Nemotron):** batch `0202c9b2-6752-476d-8a0b-75db5a39ca5b` → `experiments/doubleword_batches/arc/0202c9b2-6752-476d-8a0b-75db5a39ca5b_arc_perturbed_eval/output.jsonl`. **500** rows, **24h**, raw prompt. **`score_arc_mcq.py --perturbed --n-questions 100` → 478/500** (0 parse fails); accuracy **0.956** overall. By type (correct/total): `p1_format` 97/100; `p1_format_soft` 95/100; `p2_complexity` 94/100; `p4_role` 96/100; `p5_fewshot` 96/100. **Stored:** `experiments/results/raw/arc_perturbed_n100_0202c9b2_scored.csv`.
+
+**Baseline eval (full test split n=1,172, Nemotron):** batch `f6fd3bcd-22f0-4f73-be3b-afe4cf2700fa` → `experiments/doubleword_batches/arc/f6fd3bcd-22f0-4f73-be3b-afe4cf2700fa_arc_baseline_eval/output.jsonl`. **`score_arc_mcq.py --baseline` → 1131/1168 parsed** (accuracy **0.968**); **4** parse fails, **37** wrong. **Stored:** `experiments/results/raw/arc_baseline_full_f6fd3bcd_scored.csv`.
+
+**Perturbed eval (full 5,860 rows, Nemotron):** batch `b6f9f7b8-f3be-4917-93c2-02a81ce0aeb5` → `experiments/doubleword_batches/arc/b6f9f7b8-f3be-4917-93c2-02a81ce0aeb5_arc_perturbed_eval/output.jsonl`. **`score_arc_mcq.py --perturbed --n-questions 1172` → 5665/5850 parsed** (accuracy **0.968**); **10** parse fails, **185** wrong. By type (correct/total): `p1_format` 1137/1172; `p1_format_soft` 1135/1172; `p2_complexity` 1132/1172; `p4_role` 1128/1172; `p5_fewshot` 1133/1172. **Stored:** `experiments/results/raw/arc_perturbed_full_b6f9f7b8_scored.csv`.
+
+**ARC scored exports (`experiments/results/raw/`):** `arc_baseline_n10_0861314c_scored.csv` (10/10), `arc_baseline_n10_615b7d20_scored.csv` (9/10), `arc_baseline_n100_ff691446_scored.csv` (96/99), `arc_baseline_full_f6fd3bcd_scored.csv` (1131/1168 parsed), `arc_perturbed_n10_dde1d1d9_scored.csv` (49/50), `arc_perturbed_n100_0202c9b2_scored.csv` (478/500), `arc_perturbed_full_b6f9f7b8_scored.csv` (5665/5850 parsed).
+
+### ARC Nemotron n=100 — logged summary (2026-03-24)
+
+| | **Baseline** `ff691446` | **Perturbed** `0202c9b2` |
+|---|-------------------------|---------------------------|
+| **Scope** | First 100 rows of `arc_challenge_test_raw.csv` | First 100 `question_id`s × 5 types → **500** rows |
+| **Correct** | **96** | **478** |
+| **Wrong** | 3 | 22 |
+| **Parse fail (`-1`)** | 1 (`finish_reason: length`, `custom_id=70`) | 0 |
+| **Accuracy** | **96/99 ≈ 97.0%** on parsed rows; **96/100** if parse fail counts as not correct | **478/500 = 95.6%** |
+
+**Progress:** Staged **n=100** and **full** ARC Nemotron evals (baseline + perturbed) are **complete** (see full-split batches above).
+
+**Headline comparison (descriptive only):** On **full** data, parsed accuracies are **~96.8%** baseline vs **~96.8%** perturbed aggregate (difference negligible on headline rates). Staged n=100 showed ~**1–1.4** pp gap; perturbed rows are **not independent** (five per `question_id`). No formal paired or cluster significance test logged here.
+
+### ARC Nemotron full split — summary (2026-03-24)
+
+| | **Baseline** `f6fd3bcd` | **Perturbed** `b6f9f7b8` |
+|---|-------------------------|---------------------------|
+| **Rows** | 1,172 | 5,860 |
+| **Correct** | 1,131 | 5,665 |
+| **Wrong** | 37 | 185 |
+| **Parse fail** | 4 | 10 |
+| **Accuracy (parsed)** | **1131/1168 ≈ 96.83%** | **5665/5850 ≈ 96.84%** |
 
 ---
 

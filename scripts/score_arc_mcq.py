@@ -12,6 +12,7 @@ Predicted letter:
   - Other types / failures: extract A–D from content (prefer last \\b[A-D]\\b token; then last line single letter).
 
 Scoring: correct is 1 if predicted == gold, 0 if parsed but wrong, -1 if parse/API failure.
+Gold ``answerKey`` may be A–D or digits 1–4 (HF index); both are normalized to A–D.
 
 Usage (repo root):
   uv run python scripts/score_arc_mcq.py \\
@@ -21,6 +22,8 @@ Usage (repo root):
   uv run python scripts/score_arc_mcq.py --output-jsonl .../output.jsonl --perturbed --n-questions 10
 
   uv run python scripts/score_arc_mcq.py ... --out-csv results/scored_arc.csv
+
+When a choice has ``finish_reason: "length"``, only ``content`` is used; no ``reasoning_content`` fallback.
 """
 
 from __future__ import annotations
@@ -46,7 +49,11 @@ def _repo_root() -> Path:
 
 
 def message_text_from_record(rec: dict, *, content_only: bool) -> str:
-    """Match Doubleword download behavior: content, else reasoning_content (unless content_only)."""
+    """Visible assistant text for scoring: ``message.content``, else ``reasoning_content`` when allowed.
+
+    If ``finish_reason`` is ``length``, use **only** ``content`` (even when empty). Do not fall back to
+    ``reasoning_content``; truncated generations are left as parse failures without scraping traces.
+    """
     err = rec.get("error")
     if err is not None and err != {} and err:
         return ""
@@ -56,7 +63,9 @@ def message_text_from_record(rec: dict, *, content_only: bool) -> str:
     if resp.get("status_code") != 200:
         return ""
     try:
-        msg = resp["body"]["choices"][0]["message"]
+        choice = resp["body"]["choices"][0]
+        msg = choice["message"]
+        finish_reason = choice.get("finish_reason")
     except (KeyError, IndexError, TypeError):
         return ""
     content = (msg.get("content") or "").strip()
@@ -64,6 +73,8 @@ def message_text_from_record(rec: dict, *, content_only: bool) -> str:
         return content
     if content:
         return content
+    if finish_reason == "length":
+        return ""
     return (msg.get("reasoning_content") or "").strip()
 
 
@@ -119,6 +130,16 @@ def extract_letter_heuristic(text: str) -> str | None:
         last = lines[-1].strip().upper()
         if len(last) == 1 and last in "ABCD":
             return last
+    return None
+
+
+def normalize_gold_answer_key(raw) -> str | None:
+    """HF ARC labels may be A-D or digits 1-4 (option index). Map 1→A … 4→D."""
+    s = str(raw).strip().upper()
+    if len(s) == 1 and s in "ABCD":
+        return s
+    if s in "1234":
+        return "ABCD"[int(s) - 1]
     return None
 
 
@@ -273,8 +294,8 @@ def main() -> int:
     for _, gr in gold_df.iterrows():
         cid = int(gr["custom_id"])
         rec = records.get(cid)
-        gold = str(gr["answerKey"]).strip().upper()
-        if len(gold) != 1 or gold not in "ABCD":
+        gold = normalize_gold_answer_key(gr["answerKey"])
+        if gold is None:
             print(f"Bad gold answerKey for custom_id={cid}: {gr['answerKey']!r}", file=sys.stderr)
             return 1
 
