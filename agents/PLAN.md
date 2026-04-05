@@ -337,6 +337,38 @@ Populated `results/figures/` directory with all charts and tables.
 
 ---
 
+## TruthfulQA × Nemotron experiment ✅ DONE
+
+**Last updated:** 2026-03-30. **Results detail:** [`experiments/analysis/results.md`](../experiments/analysis/results.md).
+
+**Batch root:** `experiments/doubleword_batches/nemotron_tqa/`
+**Eval model:** `nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-NVFP4`
+**Judge model:** `nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-NVFP4`
+**Methodology:** Single-run (no triple-run needed; parse fail rate ~1.3% vs Qwen's 17–60%).
+
+| Milestone | Status | Batch ID / Artifact |
+|---|---|---|
+| `NEMOTRON_TQA_EVAL_MODEL` + `NEMOTRON_TQA_BATCH_ROOT` constants | ✅ | `src/doubledword/doubleword_client.py` |
+| `judge_core.py` — conditional `/no_think` prefix by model | ✅ | `src/doubledword/judge_core.py` |
+| Smoke baseline eval (n=10) | ✅ | `5b144501` — 10/10 |
+| Smoke perturbed eval (n=10, 50 rows) | ✅ | `4cfafcb1` — 49/50 |
+| Smoke baseline judge (Nemotron) | ✅ | `384a226a` — mean=1.000 |
+| Smoke perturbed judge (Nemotron) | ✅ | `b9205a4b` — mean=1.000 |
+| Full baseline eval (n=817) | ✅ | `d65dc694` — 810/817 non-empty (99.1%) |
+| Full perturbed eval (n=817 × 5 = 4,085) | ✅ | `f816d0f5` — 4,031/4,085 non-empty (98.7%) |
+| Full baseline judge (Nemotron) | ✅ | `e3d353a7` — mean=0.954; corrected=0.973 |
+| Full perturbed judge (Nemotron) | ✅ | `c9e99548` — mean=0.931 |
+| Corrected baseline scores (headline standard) | ✅ | `e3d353a7_.../corrected_scores.csv` — 15/37 score=0 corrected to 1 |
+| Paired comparison | ✅ | See results.md — all Δ negative (−0.007 to −0.050); p1_format_soft worst |
+
+**Key findings:**
+- Parse rate ~98.7–99.1% (single run sufficient)
+- Nemotron judge stricter than Qwen — penalises wrong supporting details even when headline correct
+- p1_format_soft shows largest drop (−0.050): JSON brevity causes model to drop hedging on ambiguous questions
+- p5_fewshot most robust (−0.007): Nemotron handles few-shot without reasoning loops (vs Qwen 60% instability)
+
+---
+
 ## ARC-Challenge experiment
 
 **Batch storage:** Doubleword batch folders (`<batch_id>_<label>/` with `input.jsonl` and `output.jsonl`) live under **`experiments/doubleword_batches/arc/`**. ARC eval scripts should pass `batch_root=ARC_BATCH_ROOT` from [`src/doubledword/doubleword_client.py`](../src/doubledword/doubleword_client.py). Other benchmarks (e.g. TruthfulQA) use sibling folders under `experiments/doubleword_batches/`.
@@ -384,9 +416,206 @@ Populated `results/figures/` directory with all charts and tables.
   - **Perturbed n=100 Nemotron ✅** — batch `0202c9b2-6752-476d-8a0b-75db5a39ca5b` → `experiments/doubleword_batches/arc/0202c9b2-6752-476d-8a0b-75db5a39ca5b_arc_perturbed_eval/` (`arc_perturbed_eval.py --n 100 --window 24h`). 500 rows; `score_arc_mcq.py --perturbed --n-questions 100` → **478/500** (0 parse fails); by-type breakdown in [`experiments/analysis/results.md`](../experiments/analysis/results.md); [`experiments/results/raw/arc_perturbed_n100_0202c9b2_scored.csv`](../experiments/results/raw/arc_perturbed_n100_0202c9b2_scored.csv).
   - **Baseline full n=1,172 Nemotron ✅** — batch `f6fd3bcd-22f0-4f73-be3b-afe4cf2700fa` → `experiments/doubleword_batches/arc/f6fd3bcd-22f0-4f73-be3b-afe4cf2700fa_arc_baseline_eval/`. `score_arc_mcq.py --baseline` → **1131/1168** parsed (4 parse fails, 37 wrong); [`experiments/results/raw/arc_baseline_full_f6fd3bcd_scored.csv`](../experiments/results/raw/arc_baseline_full_f6fd3bcd_scored.csv).
   - **Perturbed full 5,860 Nemotron ✅** — batch `b6f9f7b8-f3be-4917-93c2-02a81ce0aeb5` → `experiments/doubleword_batches/arc/b6f9f7b8-f3be-4917-93c2-02a81ce0aeb5_arc_perturbed_eval/`. `score_arc_mcq.py --perturbed --n-questions 1172` → **5665/5850** parsed (10 parse fails, 185 wrong); by-type in [`experiments/analysis/results.md`](../experiments/analysis/results.md); [`experiments/results/raw/arc_perturbed_full_b6f9f7b8_scored.csv`](../experiments/results/raw/arc_perturbed_full_b6f9f7b8_scored.csv).
-  - Next: paired / by-type analysis; commit large batch artifacts if desired.
+  - Paired / by-type analysis: ✅ DONE — see `experiments/analysis/results.md` "ARC Nemotron full split" section. All perturbation types within 0.7 pp of baseline (96.8%); negligible effect. Formal paired significance test not yet run.
   - Generic: [`src/doubledword/baseline_eval_smoke_test_doubleword.py`](../src/doubledword/baseline_eval_smoke_test_doubleword.py) / [`perturbed_eval_smoke_test.py`](../src/doubledword/perturbed_eval_smoke_test.py) with `--input-csv`, `--batch-root`, `--max-tokens`, `--no-think`, etc.
 - **Deterministic MCQ scoring** ✅ — [`scripts/score_arc_mcq.py`](../scripts/score_arc_mcq.py): `--baseline` or `--perturbed --n-questions K`, optional `--out-csv`. Joins `output.jsonl` by `custom_id` to the same CSV slice as the eval script; `correct` ∈ {1, 0, -1}. Gold **1–4** or **A–D**. No `reasoning_content` fallback when **`finish_reason: "length"`** (empty `content` → parse fail). See `experiments/analysis/results.md` for n=100 error breakdown.
+
+---
+
+## MATH-500 × Nemotron experiment ✅ DONE
+
+**Last updated:** 2026-04-05.
+**Batch root:** `experiments/doubleword_batches/math500/`
+**Eval model:** `nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-NVFP4`
+**Judge model:** `nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-NVFP4` (same model; consistent with TruthfulQA Nemotron experiment)
+**Dataset:** MATH-500 (Lightman et al. 2023) — 500 problems from the MATH test set, HuggingFace: `HuggingFaceH4/MATH-500`
+**Scoring:** LLM judge (math-specific prompt) — Nemotron given (problem, gold_answer, model_response) → binary 1/0. Boxed-answer extraction + normalization as pre-filter to reduce judge calls.
+
+### Overview
+
+MATH-500 is a free-response benchmark of 500 competition math problems across 7 subjects (Algebra, Counting & Probability, Geometry, Intermediate Algebra, Number Theory, Prealgebra, Precalculus) and 5 difficulty levels. Unlike ARC-Challenge (MCQ with a single letter), correct answers can be fractions, expressions, sets, or symbolic forms — requiring equivalence-aware scoring.
+
+### Milestone table
+
+| Milestone | Status | Artifact |
+|---|---|---|
+| `MATH500_BATCH_ROOT` + `MATH500_EVAL_MODEL` constants | ✅ | `src/doubledword/doubleword_client.py` |
+| Dataset loader | ✅ | `src/load_math500.py` |
+| Perturbation generator | ✅ | `src/generate_math500_perturbations.py` |
+| Baseline eval script | ✅ | `src/doubledword/math500_baseline_eval.py` |
+| Perturbed eval script | ✅ | `src/doubledword/math500_perturbed_eval.py` |
+| Judge core | ✅ | `src/doubledword/math500_judge_core.py` |
+| Baseline judge script | ✅ | `src/doubledword/math500_baseline_judge.py` |
+| Perturbed judge script | ✅ | `src/doubledword/math500_perturbed_judge.py` |
+| Smoke baseline eval (n=10) | ✅ | `ac0bf6bb` |
+| Smoke perturbed eval (n=10, 50 rows) | ✅ | `2f1ed68f` |
+| Smoke baseline judge | ✅ | `2ed4b355` — accuracy=1.000 |
+| Smoke perturbed judge | ✅ | `b98456c0` — accuracy=1.000 |
+| Full baseline eval (n=500) | ✅ | `0a302d82` — 415/500 non-empty |
+| Full perturbed eval (n=500 × 5 = 2,500 rows) | ✅ | `6d766c04` — 2,197/2,500 non-empty |
+| Full baseline judge | ✅ | `c8df89b1` — accuracy=0.988 |
+| Full perturbed judge | ✅ | `824cc10b` — accuracy=0.985 |
+| Analysis + results.md update | ✅ | `experiments/analysis/results.md` |
+
+---
+
+### Dataset schema (verified from HuggingFace)
+
+Columns: `problem`, `solution`, `answer`, `subject`, `level`, `unique_id`, `split`
+
+- `unique_id` — existing string ID (e.g. `"test/precalculus/807.json"`); use as primary key, no synthetic index needed
+- `answer` — gold answer in LaTeX, already stripped of `\boxed{}` (e.g. `\left( 3, \frac{\pi}{2} \right)`)
+- `solution` — full worked solution; the model does **not** receive this; useful only for judge prompt design reference
+- Only 1 split: `test`
+
+---
+
+### Phase M1: Dataset Loading ✅
+
+**Goal:** Download MATH-500 from HuggingFace and produce a clean baseline CSV.
+
+**Tasks:**
+- [ ] Create `src/load_math500.py`
+  - Dataset: `HuggingFaceH4/MATH-500`, split `test` (500 problems)
+  - Preserve columns: `unique_id`, `problem`, `answer`, `subject`, `level` (drop `solution` and `split`)
+  - Build `prompt` column: `"Solve the following math problem. Show your reasoning, then state your final answer clearly.\n\n{problem}"`
+  - Save to `data/baseline/math500_baseline.csv`
+- [ ] Verify: 500 rows, `answer` non-empty for all rows, `unique_id` values are unique
+
+---
+
+### Phase M2: Perturbation Generation ✅
+
+**Goal:** Produce the 5 standard perturbation variants for all 500 problems.
+
+**Tasks:**
+- [ ] Create `src/generate_math500_perturbations.py`
+  - Reuse perturbation functions from `generate_perturbations.py` (p1_format, p1_format_soft, p2_complexity, p4_role)
+  - p5_fewshot: prepend 2 math examples (one algebra, one number theory) then the target problem
+  - Output columns: `unique_id`, `answer` (gold), `subject`, `level`, `perturbation_type`, `prompt_sent`, `system_prompt`, `response_format`
+  - Save to `data/perturbations/math500_perturbed.csv`
+- [ ] Verify: 2,500 rows (500 × 5), all 5 perturbation types present for every `unique_id`
+
+---
+
+### Phase M3: Client Constants ✅
+
+**Tasks:**
+- [ ] Add to `src/doubledword/doubleword_client.py`:
+  ```python
+  MATH500_EVAL_MODEL = ARC_EVAL_MODEL   # nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-NVFP4
+  MATH500_BATCH_ROOT = "experiments/doubleword_batches/math500"
+  ```
+- No `/no_think` prefix for Nemotron (already enforced by `model_uses_no_think_user_prefix`)
+
+---
+
+### Phase M4: Baseline Evaluation ⏳
+
+**Script:** `src/doubledword/math500_baseline_eval.py` (model after `arc_baseline_eval.py`)
+- Load first `--n` rows of `data/baseline/math500_baseline.csv`
+- Submit `prompt` column to eval model via `submit_batch`
+- Default: `batch_root=MATH500_BATCH_ROOT`, `model=MATH500_EVAL_MODEL`, `max_tokens=4096`, `window="24h"`
+- Saves `input.jsonl` + `output.jsonl` under `experiments/doubleword_batches/math500/<batch_id>_math500_baseline_eval/`
+
+**Run order:**
+1. Smoke: `uv run python src/doubledword/math500_baseline_eval.py --n 10 --window 1h`
+   - Verify: 10 rows, all responses non-empty, answers look like math solutions
+2. Full: `uv run python src/doubledword/math500_baseline_eval.py --n 500 --window 24h`
+
+---
+
+### Phase M5: Perturbed Evaluation ❌
+
+**Script:** `src/doubledword/math500_perturbed_eval.py` (model after `arc_perturbed_eval.py`)
+- Load first `--n` unique `question_id`s from `data/perturbations/math500_perturbed.csv` (→ n×5 rows)
+- Apply `response_format` for p1_format; `system_prompt` for p4_role
+- Default: `MATH500_BATCH_ROOT`, `MATH500_EVAL_MODEL`, `max_tokens=4096`, `window="24h"`
+
+**Run order:**
+1. Smoke: `uv run python src/doubledword/math500_perturbed_eval.py --n 10 --window 1h`
+   - Verify: 50 rows, all 5 types for question_ids 0–9
+2. Full: `uv run python src/doubledword/math500_perturbed_eval.py --n 500 --window 24h`
+
+---
+
+### Phase M6: Scoring ✅
+
+Mirrors TruthfulQA judge approach. Two separate judge scripts (baseline + perturbed) call `score_math_jsonl()` from `math500_judge_core.py`.
+
+**Judge model:** Nemotron (`MATH500_EVAL_MODEL`) — same model as eval.
+**Judge prompt:** Given `(problem, gold_answer, model_response)` → `{"correct": 1}` or `{"correct": 0}`.
+**Scores:** 1 = correct, 0 = incorrect, -1 = parse error / [ERROR] (excluded from mean).
+
+**Scripts:**
+- `src/doubledword/math500_judge_core.py` — judge logic, prompt, `score_math_jsonl()`
+- `src/doubledword/math500_baseline_judge.py` — thin wrapper, takes `--eval-batch-id`
+- `src/doubledword/math500_perturbed_judge.py` — thin wrapper, takes `--eval-batch-id --n-questions K`
+
+**Run order (after eval batches complete):**
+```bash
+# Baseline judge
+.venv/bin/python src/doubledword/math500_baseline_judge.py --eval-batch-id <id>
+
+# Perturbed judge
+.venv/bin/python src/doubledword/math500_perturbed_judge.py --eval-batch-id <id> --n-questions 500
+```
+
+---
+
+### Phase M7: Analysis ❌
+
+**Tasks:**
+- [ ] Compute baseline accuracy (mean correct, excluding parse_fail)
+- [ ] Compute per-perturbation-type accuracy and Δ vs baseline (paired by `question_id`)
+- [ ] Note any subject-level or difficulty-level patterns
+- [ ] Update `experiments/analysis/results.md` with all batch IDs, accuracy figures, and Δ table
+- [ ] Update this PLAN.md section with ✅ markers as tasks complete
+
+---
+
+### Design decisions
+
+| Decision | Choice | Rationale |
+|---|---|---|
+| HuggingFace dataset | `HuggingFaceH4/MATH-500` | Canonical MATH-500 split (Lightman et al. 2023) |
+| Eval model | Nemotron 120B | Consistent with ARC + TruthfulQA Nemotron experiments; no `/no_think` needed |
+| Judge model | Same Nemotron | Consistent with TruthfulQA Nemotron judge; no additional model needed |
+| Scoring | Deterministic-first, judge fallback | Avoids unnecessary API calls; SymPy avoided to keep deps minimal |
+| Prompt format | Problem + "show reasoning, state final answer" | Encourages `\boxed{...}` output standard to MATH benchmark |
+| p5_fewshot examples | 2 math problems (algebra + number theory) | Matches existing pattern; domain-appropriate |
+
+---
+
+---
+
+## Last Letter Concatenation × Nemotron experiment ✅ DONE
+
+**Last updated:** 2026-04-05
+**Batch root:** `experiments/doubleword_batches/last_letter/`
+**Eval model:** `nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-NVFP4`
+**Dataset:** `yoonholee/last-letter-concatenation` (train split, 1,000 examples) — each example is a 2–4 word full name; gold answer is concatenated last letters.
+**Scoring:** Exact match — no judge model needed. Gold answer = short string of last letters.
+
+### Motivation
+
+Tam et al. (2024) "Let Me Speak Freely?" found Last Letter Concatenation is one of the tasks **most sensitive to JSON format restrictions** for smaller models (e.g. LLaMA-3-8B dropped ~42pp under JSON-mode). Testing Nemotron-120B here tests whether model scale eliminates this sensitivity.
+
+### Steps
+
+| Step | Status | Artifact |
+|---|---|---|
+| Data: loader + perturbations | ✅ | `data/baseline/last_letter_baseline.csv` (1,000 rows), `data/perturbations/last_letter_perturbed.csv` (5,000 rows) |
+| Eval: baseline + perturbed scripts, submit batches | ✅ | Baseline `40ec95b8` (1,000 rows), Perturbed `d62af255` (5,000 rows) |
+| Score + Analysis: exact match, Δ by type, results.md | ✅ | `scripts/score_last_letter.py`; CSVs in `experiments/results/raw/`; `experiments/analysis/results.md` |
+
+### Key design decisions
+
+- **p1_format:** prompt-level JSON instruction (no API `response_format` flag) — same fix as MATH-500
+- **Scoring:** exact string match (lowercase, stripped) — no judge needed
+- **Batch root:** `experiments/doubleword_batches/last_letter/`
+- **Eval model:** `nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-NVFP4` (same as MATH-500/ARC)
+- **max_tokens:** 512 — answers are 2–4 characters; reasoning traces still short for symbolic tasks
 
 ---
 

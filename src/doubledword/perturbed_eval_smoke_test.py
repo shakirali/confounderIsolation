@@ -38,9 +38,10 @@ def run_perturbed_smoke_test(
     batch_root: str | None = None,
     no_think_prefix: bool = False,
     label: str = "perturbed_eval",
+    id_column: str = "question_id",
 ):
     """
-    Smoke test: evaluate the first N question_ids (all perturbation types) via Doubleword batch.
+    Smoke test: evaluate the first N unique IDs (all perturbation types) via Doubleword batch.
 
     Batch input/output JSONL saved under <batch_root>/<batch_id>_<label>/.
 
@@ -49,13 +50,14 @@ def run_perturbed_smoke_test(
         batch_root: Parent of batch folders (ARC: `ARC_BATCH_ROOT`).
         no_think_prefix: Opt-in `/no_think` line for Qwen-style models only (default False).
         label: Subfolder suffix after batch UUID.
+        id_column: Column used to identify unique questions (default `question_id`; use `unique_id` for MATH-500).
     """
     root = batch_root if batch_root is not None else DEFAULT_BATCH_ROOT
     full_df = pd.read_csv(input_path)
     if prompt_column not in full_df.columns:
         raise ValueError(f"Column {prompt_column!r} not in {input_path}; columns: {list(full_df.columns)}")
-    question_ids = full_df["question_id"].unique()[:n]
-    df = full_df[full_df["question_id"].isin(question_ids)].reset_index(drop=True)
+    question_ids = full_df[id_column].unique()[:n]
+    df = full_df[full_df[id_column].isin(question_ids)].reset_index(drop=True)
     print(
         f"Perturbed smoke test: {len(df)} rows ({n} questions × {df['perturbation_type'].nunique()} types) "
         f"from {input_path} (batch_root={root})"
@@ -64,8 +66,8 @@ def run_perturbed_smoke_test(
     prompts = df[prompt_column].tolist()
     system_prompts = [s if pd.notna(s) else None for s in df["system_prompt"].tolist()]
     response_formats = [
-        {"type": "json_object"} if t == "p1_format" else None
-        for t in df["perturbation_type"].tolist()
+        ({"type": "json_object"} if pd.notna(r) and r else None)
+        for r in df["response_format"].tolist()
     ]
 
     if eval_batch_id:

@@ -10,7 +10,7 @@ import os
 
 import pandas as pd
 
-from doubleword_client import DEFAULT_COMPLETION_WINDOW, batch_dir, download_results, submit_batch_from_file
+from doubleword_client import DEFAULT_COMPLETION_WINDOW, batch_dir, download_results, submit_batch_from_file, model_uses_no_think_user_prefix
 
 DEFAULT_JUDGE_MODEL = "Qwen/Qwen3.5-397B-A17B-FP8"
 
@@ -124,7 +124,7 @@ def build_judge_input(
             "url": "/v1/chat/completions",
             "body": {
                 "model": judge_model,
-                "messages": [{"role": "user", "content": f"/no_think\n{prompt}"}],
+                "messages": [{"role": "user", "content": f"/no_think\n{prompt}" if model_uses_no_think_user_prefix(judge_model) else prompt}],
                 "temperature": 0.0,
                 "max_tokens": 4096,
                 "response_format": {"type": "json_object"},

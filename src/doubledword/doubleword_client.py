@@ -37,9 +37,17 @@ DEFAULT_MODEL = "Qwen/Qwen3.5-35B-A3B-FP8"
 # ARC-Challenge experiment: canonical eval model (see agents/PLAN.md § ARC-Challenge)
 ARC_EVAL_MODEL = "nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-NVFP4"
 
+# TruthfulQA × Nemotron experiment: same model as ARC eval
+NEMOTRON_TQA_EVAL_MODEL = "nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-NVFP4"
+
+# MATH-500 × Nemotron experiment: same model
+MATH500_EVAL_MODEL = "nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-NVFP4"
+
 # Local folders for batch JSONL (input.jsonl + output.jsonl per batch_id_label/)
 DEFAULT_BATCH_ROOT = os.path.join("experiments", "doubleword_batches")
 ARC_BATCH_ROOT = os.path.join("experiments", "doubleword_batches", "arc")
+NEMOTRON_TQA_BATCH_ROOT = os.path.join("experiments", "doubleword_batches", "nemotron_tqa")
+MATH500_BATCH_ROOT = os.path.join("experiments", "doubleword_batches", "math500")
 
 
 def model_uses_no_think_user_prefix(model: str) -> bool:
@@ -83,8 +91,10 @@ def download_results(
     """
     client = get_client()
     status = client.batches.retrieve(batch_id)
-    if status.status != "completed":
+    if status.status not in ("completed", "cancelled"):
         raise RuntimeError(f"Batch {batch_id} is not completed (status: {status.status})")
+    if status.status == "cancelled":
+        print(f"Warning: batch {batch_id} was cancelled — downloading partial results ({status.request_counts.completed}/{status.request_counts.total} completed).")
 
     print(f"Downloading results from batch {batch_id}...")
     response = requests.get(
@@ -140,6 +150,9 @@ def _poll_and_download(
             pbar.update(1)
 
             if status.status == "completed":
+                break
+            elif status.status == "cancelled" and counts.completed > 0:
+                print(f"Batch {batch_id} was cancelled with {counts.completed}/{counts.total} completed — downloading available results.")
                 break
             elif status.status in ("failed", "expired", "cancelled"):
                 raise RuntimeError(f"Batch {batch_id} ended with status: {status.status}")
