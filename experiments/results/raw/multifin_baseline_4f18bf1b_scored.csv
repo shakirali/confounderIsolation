@@ -1,0 +1,548 @@
+custom_id,unique_id,text,label,gold,predicted,finish_reason,correct
+0,mf_0000,Deal summary Helen Oy / Infratek Finland Oy,Finance,B,A,stop,0
+1,mf_0001,Deals,Finance,B,B,stop,1
+2,mf_0002,PwC named a Major Player in the IDC MarketScape for Worldwide Intelligent Automation Services 2019,Technology,F,F,stop,1
+3,mf_0003,Proposal for digital services tax ,Tax & Accounting,E,E,stop,1
+4,mf_0004,Social Impact Lab,Business & Management,A,A,stop,1
+5,mf_0005,International Financial Reporting Standards (IFRS),Tax & Accounting,E,E,stop,1
+6,mf_0006,Tax and legal news 4 November 2016,Tax & Accounting,E,E,stop,1
+7,mf_0007,Financial Crime,Government & Controls,C,B,stop,0
+8,mf_0008,"Information Technologies Organisation, Process and Control Services",Technology,F,F,stop,1
+9,mf_0009,PwC’s Global Artificial Intelligence Study: Sizing the prize,Technology,F,F,stop,1
+10,mf_0010,"Information Technologies Transformation, Strategy and Governance Services",Technology,F,F,stop,1
+11,mf_0011,Avoid Earnings Surprises after closing an M&A acquisition,Finance,B,B,stop,1
+12,mf_0012,Global Entertainment & Media Outlook 2018–2022,Industry,D,D,stop,1
+13,mf_0013,Transcript: Tax bulletins summary / October 2019,Tax & Accounting,E,E,stop,1
+14,mf_0014,Global study on CEO trends indicates a significant uptick in CEOs forced out of office for ethical lapses,Business & Management,A,A,stop,1
+15,mf_0015,"It’s time for family businesses to seize the opportunity of gender balance: Renate de Lange, PwC",Business & Management,A,A,stop,1
+16,mf_0016,Emerging Trends in Real Estate: Europe 2017,Industry,D,D,stop,1
+17,mf_0017,PwC’s M&A team ranked as Poland’s deals leader by Mergermarket,Finance,B,B,stop,1
+18,mf_0018,Healthcare revenue cycles remain complex,Industry,D,B,stop,0
+19,mf_0019,Cyber risk considerations and impacts,Technology,F,F,stop,1
+20,mf_0020,"European Council conclusions: Fairness, efficiency, and conforming to the digitalization as key areas of European tax policy",Tax & Accounting,E,E,stop,1
+21,mf_0021,People and organisation,Business & Management,A,A,stop,1
+22,mf_0022,Key findings from the global Oil and Gas industry,Industry,D,D,stop,1
+23,mf_0023,Environmental stewardship,Business & Management,A,A,stop,1
+24,mf_0024,Q&A What is blockchain?,Technology,F,F,stop,1
+25,mf_0025,Winners of the Healthy Sense Award have been announced,Industry,D,A,stop,0
+26,mf_0026,I Fintech and you? and you? and you? and you?,Finance,B,F,stop,0
+27,mf_0027,SAP Centre of Excellence,Technology,F,F,stop,1
+28,mf_0028,"IFRS news, August 2017",Tax & Accounting,E,E,stop,1
+29,mf_0029,PwC to drive security and compliance with new cybersecurity suite,Technology,F,F,stop,1
+30,mf_0030,The New Class of Digital Leaders,Technology,F,F,stop,1
+31,mf_0031,Healthcare providers must create agile digital architecture,Industry,D,F,stop,0
+32,mf_0032,COVID-19,Industry,D,C,stop,0
+33,mf_0033,"Type of deal: Debt advisory Sector: Energy
+",Industry,D,B,stop,0
+34,mf_0034,Linking ESG to financing and investment activities,Business & Management,A,B,stop,0
+35,mf_0035,Government/Public Services,Government & Controls,C,C,stop,1
+36,mf_0036,Ethics & Compliance Management,Government & Controls,C,C,stop,1
+37,mf_0037,Hospitality Industry,Industry,D,D,stop,1
+38,mf_0038,Greek real estate taxation: a brief summary 2019,Industry,D,E,stop,0
+39,mf_0039,Tax and legal news 4 May 2017,Tax & Accounting,E,E,stop,1
+40,mf_0040,Digital Forensics and Data Analytics Solutions,Government & Controls,C,F,stop,0
+41,mf_0041,"Family, country, and community': Giving something back in South Africa: Global Family Business Survey 2016: PwC",Business & Management,A,A,stop,1
+42,mf_0042,"Tax and legal news, April 2019 ",Tax & Accounting,E,E,stop,1
+43,mf_0043,IT Applications and Software Consulting - not as straightforward as it used to be,Technology,F,F,stop,1
+44,mf_0044,Worldwide Tax Summaries 2018/2019,Tax & Accounting,E,E,stop,1
+45,mf_0045,Forensic Services,Government & Controls,C,E,stop,0
+46,mf_0046,Deal summary Coreplast Laitila Oy,Finance,B,A,stop,0
+47,mf_0047,Cédric Nidecker: Intrapreneur to the rescue,Business & Management,A,A,stop,1
+48,mf_0048,PwC at Mobile World Congress 2018,Technology,F,F,stop,1
+49,mf_0049,Consumers ready to embrace AI and robots for their healthcare needs,Industry,D,F,stop,0
+50,mf_0050,FinTech’s growing influence on Financial Services,Finance,B,F,stop,0
+51,mf_0051,Tax Services,Tax & Accounting,E,E,stop,1
+52,mf_0052,PwC to double CEE Cybersecurity team to 500,Technology,F,F,stop,1
+53,mf_0053,Total Retail 2017,Industry,D,D,stop,1
+54,mf_0054,Transaction Services,Finance,B,B,stop,1
+55,mf_0055,Changes to tax reporting digitalisation landscape during COVID-19,Tax & Accounting,E,E,stop,1
+56,mf_0056,Deal summary Family Piri / Ruukki Construction,Finance,B,B,stop,1
+57,mf_0057,2019 Risk in Review Study,Government & Controls,C,B,stop,0
+58,mf_0058,The sweet smell of success: Innovation and internationalisation in France: Global Family Business Survey 2016: PwC,Business & Management,A,A,stop,1
+59,mf_0059,Deal summary Mankkaan Taksi Oy / Cabonline Group,Finance,B,A,stop,0
+60,mf_0060,The World in 2050,Government & Controls,C,F,stop,0
+61,mf_0061,IFRS disclosure checklist 2012,Tax & Accounting,E,E,stop,1
+62,mf_0062,Deal summary Caverion Corporation / Huurre Group Oy,Finance,B,A,stop,0
+63,mf_0063,New Chief Data Scientist for PwC Finland,Technology,F,F,stop,1
+64,mf_0064,Tax Flash: Incentives for the establishment of Shared Services Centers in Greece,Tax & Accounting,E,E,stop,1
+65,mf_0065,European cities hotel forecast,Industry,D,D,stop,1
+66,mf_0066,The Global State of Information Security Survey: 2017,Technology,F,F,stop,1
+67,mf_0067,Audit and Assurance Services,Tax & Accounting,E,E,stop,1
+68,mf_0068,Tech breakthroughs megatrend: how to prepare for its impact,Technology,F,F,stop,1
+69,mf_0069,Fit for Growth - Strategy&,Business & Management,A,A,stop,1
+70,mf_0070,Global wage projections to 2030,Government & Controls,C,A,stop,0
+71,mf_0071,Diploma in IFRS by ACCA,Tax & Accounting,E,E,stop,1
+72,mf_0072,Asset Management 2020 – A Brave New World,Finance,B,B,stop,1
+73,mf_0073,The Healthy Sense Award: applications are now open,Industry,D,A,stop,0
+74,mf_0074,Compliance in 2025 - Resilience: A journal of strategy and risk,Government & Controls,C,A,stop,0
+75,mf_0075,"Tax and legal news, November 2018",Tax & Accounting,E,E,stop,1
+76,mf_0076,Commercial and market due diligence,Finance,B,B,stop,1
+77,mf_0077,Retail tax in Poland | Tax provision is legal,Industry,D,E,stop,0
+78,mf_0078,Human rights statement,Business & Management,A,C,stop,0
+79,mf_0079,Innovation and entrepreneurship,Business & Management,A,A,stop,1
+80,mf_0080,PwC's CXO Survey 2018,Business & Management,A,A,stop,1
+81,mf_0081,Emerging Markets: Driving the payments transformation,Finance,B,F,stop,0
+82,mf_0082,From Przemyśl to premieres: Growing a global brand in Poland: Global Family Business Survey 2016: PwC,Business & Management,A,A,stop,1
+83,mf_0083,Companies shifting more R&D spending away from physical products to software and services: 2016 Global Innovation 1000 Study,Business & Management,A,F,stop,0
+84,mf_0084,Deal summary Europcar franchises in Finland and Norway / Europcar Mobility Group SA,Finance,B,A,stop,0
+85,mf_0085,Creating value beyond the deal: Private Equity,Finance,B,B,stop,1
+86,mf_0086,Due diligence,Finance,B,B,stop,1
+87,mf_0087,Deal summary Procuritas AB  / Procuritas AB,Finance,B,B,stop,1
+88,mf_0088,Central Bank Digital Currency,Finance,B,B,stop,1
+89,mf_0089,BEPS Documentation Rules Enacted in Turkey,Tax & Accounting,E,E,stop,1
+90,mf_0090,Work in the European Union – taxes and contributions,Business & Management,A,E,stop,0
+91,mf_0091,Virtual reality,Technology,F,F,stop,1
+92,mf_0092,Tax and legal news 10 March 2016,Tax & Accounting,E,E,stop,1
+93,mf_0093,Newspaper publishing,Industry,D,D,stop,1
+94,mf_0094,20th CEO Survey: Key findings from the banking and capital markets industry,Finance,B,B,stop,1
+95,mf_0095,Felix Kroschke: Transportation transformer,Industry,D,D,stop,1
+96,mf_0096,Business Analytics,Technology,F,A,stop,0
+97,mf_0097,Retail and consumer,Industry,D,D,stop,1
+98,mf_0098,Reputation Management,Business & Management,A,A,stop,1
+99,mf_0099,"‘A sense of responsibility’: Family, community and nation in Oman: Global Family Business Survey 2016: PwC",Business & Management,A,A,stop,1
+100,mf_0100,Emerging Trends in Real Estate® Europe 2016,Industry,D,D,stop,1
+101,mf_0101,PwC rated as a leader in robotic process automation (RPA) service providers in health industries report by independent research firm,Technology,F,F,stop,1
+102,mf_0102,Tax Flash: Supreme Administrative Court: The solidarity contribution falls within the scope of DTTs,Tax & Accounting,E,E,stop,1
+103,mf_0103,Cybersecurity,Technology,F,F,stop,1
+104,mf_0104,European Private Business Survey 2018,Business & Management,A,A,stop,1
+105,mf_0105,People Analytics,Business & Management,A,A,stop,1
+106,mf_0106,HR Metrics & Analytics,Business & Management,A,A,stop,1
+107,mf_0107,Winning through M&A in the next recession,Finance,B,B,stop,1
+108,mf_0108,19th Annual Global CEO Survey: Key findings in the insurance sector,Finance,B,D,stop,0
+109,mf_0109,C25 by Numbers 2018,Finance,B,B,stop,1
+110,mf_0110,Cybersecurity and Privacy,Technology,F,F,stop,1
+111,mf_0111,Deal summary Pohjolan Werkonrakennus Oy / Infratek,Finance,B,B,stop,1
+112,mf_0112,ESG requirements and reporting,Business & Management,A,B,stop,0
+113,mf_0113,Strategic Portfolio Management,Business & Management,A,B,stop,0
+114,mf_0114,PwC Greece is an accredited verifier for EU Monitoring Reporting and Verification (EU MRV) for Shipping companies,Industry,D,C,stop,0
+115,mf_0115,DAC6: The EU Directive on cross-border tax arrangements,Tax & Accounting,E,E,stop,1
+116,mf_0116,2019 Digital Operations study for energy,Industry,D,F,stop,0
+117,mf_0117,Deal summary Porvoon Lääkärikeskus and Porvoon Röntgen / Mehiläinen Oy,Finance,B,A,stop,0
+118,mf_0118,Creating value beyond the deal: private equity,Finance,B,B,stop,1
+119,mf_0119,Blockchain a catalyst for new approaches in insurance,Technology,F,F,stop,1
+120,mf_0120,20th CEO Survey: Key findings from the insurance and private pension industry,Finance,B,D,stop,0
+121,mf_0121,Central Bank Digital Currency,Finance,B,B,stop,1
+122,mf_0122,Winning through M&A in the next recession,Finance,B,B,stop,1
+123,mf_0123,Effectively tackling innovation risk helps fuel organisational growth,Business & Management,A,A,stop,1
+124,mf_0124,IFRS 15 Revenue from contracts with customers,Tax & Accounting,E,E,stop,1
+125,mf_0125,The impact of Brexit on (global) trade,Government & Controls,C,A,stop,0
+126,mf_0126,Tax and legal news 24 March 2017,Tax & Accounting,E,E,stop,1
+127,mf_0127,Provisions of the simplified APA procedure to be introduced by the end of June 2019,Tax & Accounting,E,E,stop,1
+128,mf_0128,Responding to the UK business impacts of COVID-19,Business & Management,A,A,stop,1
+129,mf_0129,Industry Collaborative Cloud Market – a young but fast growing market,Technology,F,F,stop,1
+130,mf_0130,Startup,Business & Management,A,A,stop,1
+131,mf_0131,Draft decrees on the CIT TP form and the CbCR published by Ministry of Finance,Tax & Accounting,E,E,stop,1
+132,mf_0132,Strategic planning,Business & Management,A,A,stop,1
+133,mf_0133,"India, Fit for Future",Government & Controls,C,B,stop,0
+134,mf_0134,Tax - Mergers and acquisitions,Finance,B,E,stop,0
+135,mf_0135,Tax and legal news 4 November 2016,Tax & Accounting,E,E,stop,1
+136,mf_0136,Accounting advisory,Tax & Accounting,E,E,stop,1
+137,mf_0137,Capital Markets 2030,Finance,B,B,stop,1
+138,mf_0138,Important changes in PIT taxation of employee incentive programs based on shares and derivatives - announced by the Polish government,Tax & Accounting,E,E,stop,1
+139,mf_0139,PwC's COVID-19 CFO Pulse,Business & Management,A,B,stop,0
+140,mf_0140,Real Estate 2020,Industry,D,D,stop,1
+141,mf_0141,PwC advised funds managed by Aberdeen Standard Investments on a transaction in renewable energy,Finance,B,B,stop,1
+142,mf_0142,Transparency and Good Governance,Government & Controls,C,C,stop,1
+143,mf_0143,PwC's 22nd CEO Survey - Greek report,Business & Management,A,A,stop,1
+144,mf_0144,SAP Lumira and Predictive Analytics,Technology,F,F,stop,1
+145,mf_0145,"Tax and legal news, 22 December 2015",Tax & Accounting,E,E,stop,1
+146,mf_0146,PwC rated as a leader in robotic process automation (RPA) service providers in health industries report by independent research firm,Technology,F,F,stop,1
+147,mf_0147,Budget 2021,Tax & Accounting,E,C,stop,0
+148,mf_0148,PwC Tax Forum 2020,Tax & Accounting,E,E,stop,1
+149,mf_0149,Strategic supply management,Industry,D,A,stop,0
+150,mf_0150,Transaction Services,Finance,B,B,stop,1
+151,mf_0151,Tax Flash: Exit taxation - Application details,Tax & Accounting,E,E,stop,1
+152,mf_0152,Magazine publishing,Industry,D,D,stop,1
+153,mf_0153,PwC named a Leader in the IDC MarketScape for Worldwide Cloud Professional Services 2020,Technology,F,F,stop,1
+154,mf_0154,Drive to digital treasury,Tax & Accounting,E,B,stop,0
+155,mf_0155,Transaction Services,Finance,B,B,stop,1
+156,mf_0156,PwC publishes annual Worldwide Tax Summaries - Corporate Taxes 2017/18,Tax & Accounting,E,E,stop,1
+157,mf_0157,Business strategy,Business & Management,A,A,stop,1
+158,mf_0158,Smarter Risk Taking: Delivering a AI-Based Risk Information and Decision Management System in the 21st Century,Technology,F,F,stop,1
+159,mf_0159,Tax Flash: New Tax Bill - Individuals income taxation,Tax & Accounting,E,E,stop,1
+160,mf_0160,Why not delete income tax at all?,Tax & Accounting,E,E,stop,1
+161,mf_0161,Cleantech,Industry,D,F,stop,0
+162,mf_0162,Mergers & Acquisitions,Finance,B,B,stop,1
+163,mf_0163,2020 Global Digital IQ,Technology,F,F,stop,1
+164,mf_0164,Global Entertainment & Media Outlook 2019–2023,Industry,D,D,stop,1
+165,mf_0165,Retail & Consumer,Industry,D,D,stop,1
+166,mf_0166,ALM Intelligence rates PwC a global leader in HR Operations Consulting,Business & Management,A,A,stop,1
+167,mf_0167,The human side of crisis,Business & Management,A,A,stop,1
+168,mf_0168,@digital #11: Machine Experience,Technology,F,F,stop,1
+169,mf_0169,Business transformation is a continuous process,Business & Management,A,A,stop,1
+170,mf_0170,CEO optimism booms despite increasing anxiety over threats to growth,Business & Management,A,A,stop,1
+171,mf_0171,IFRS 17,Tax & Accounting,E,E,stop,1
+172,mf_0172,"Building sustainable, inclusive transportation systems: A framework for the future",Industry,D,D,stop,1
+173,mf_0173,Engineering and Construction Industry,Industry,D,D,stop,1
+174,mf_0174,Doing Business Globally Spotlight: Brazil,Government & Controls,C,A,stop,0
+175,mf_0175,New approach to SAF-T structure for VAT - JPK_VAT corrections rules in 2018,Tax & Accounting,E,E,stop,1
+176,mf_0176,Worldwide Tax Summaries,Tax & Accounting,E,E,stop,1
+177,mf_0177,Banking and capital markets,Finance,B,B,stop,1
+178,mf_0178,PwC and Alpina Publisher have announced publication of the book The Critical Few,Industry,D,A,stop,0
+179,mf_0179,IFRS News,Tax & Accounting,E,E,stop,1
+180,mf_0180,PwC strengthens its business consulting practice with acquisition of pricing boutique Fern Partners,Finance,B,A,stop,0
+181,mf_0181,Asset and Wealth Management confidence high but slow adoption of  technology change could threaten growth,Finance,B,B,stop,1
+182,mf_0182,"Tax and legal news, March 2018",Tax & Accounting,E,E,stop,1
+183,mf_0183,"Legal Flash: Amendments to the Greek Bankruptcy Code, the Law on the Out-of-Court Work Out Mechanism (OCW) and the Law on Non-Performing Loan Management Companies",Finance,B,B,stop,1
+184,mf_0184,Data Analytics,Technology,F,F,stop,1
+185,mf_0185,Technology alliances,Technology,F,F,stop,1
+186,mf_0186,Logistics and Supply Chain Management,Industry,D,A,stop,0
+187,mf_0187,"IFRS news, February 2020",Tax & Accounting,E,E,stop,1
+188,mf_0188,Corporate Governance,Government & Controls,C,A,stop,0
+189,mf_0189,Countdown to the 2016 Global Family Business Survey,Business & Management,A,A,stop,1
+190,mf_0190,M&A Integration - Focus on Financial services,Finance,B,B,stop,1
+191,mf_0191,US tax reform,Tax & Accounting,E,E,stop,1
+192,mf_0192,Real estate valuation and management,Industry,D,D,stop,1
+193,mf_0193,"Industry 4.0 “the Polish way” – where are we, compared to Europe?",Technology,F,D,stop,0
+194,mf_0194,Corporate acquisitions - Tax services,Finance,B,E,stop,0
+195,mf_0195,IFRS news - March 2017,Tax & Accounting,E,E,stop,1
+196,mf_0196,Capital markets: the rise of non-bank infrastructure project finance,Finance,B,B,stop,1
+197,mf_0197,Effects of Brexit for British citizens residing and working in Finland,Government & Controls,C,C,stop,1
+198,mf_0198,Pharma & Healthcare,Industry,D,D,stop,1
+199,mf_0199,Responsible Business Leadership,Business & Management,A,A,stop,1
+200,mf_0200,The Budget process as a business growth engine,Business & Management,A,A,stop,1
+201,mf_0201,Government Incentive Services Department,Government & Controls,C,C,stop,1
+202,mf_0202,HR: Delivering more for less: What sets top performers apart?,Business & Management,A,A,stop,1
+203,mf_0203,Deal summary SN4 International Oy / Bisnode Finland Oy,Finance,B,B,stop,1
+204,mf_0204,Diversity and inclusion: PwC - Global Annual Review 2020,Business & Management,A,A,stop,1
+205,mf_0205,Tax accounting,Tax & Accounting,E,E,stop,1
+206,mf_0206,Finnish Tax Authorities’ actions to support companies during the COVID-19 epidemic,Tax & Accounting,E,E,stop,1
+207,mf_0207,PwC Named a Leader for Logistics Management Consulting for second consecutive year,Industry,D,A,stop,0
+208,mf_0208,Linking ESG to financing and investment activities,Business & Management,A,B,stop,0
+209,mf_0209,Internet advertising,Industry,D,F,stop,0
+210,mf_0210,Shipping Industry,Industry,D,D,stop,1
+211,mf_0211,Global Consumer Insights Survey,Industry,D,A,stop,0
+212,mf_0212,Strategy&,Business & Management,A,A,stop,1
+213,mf_0213,The rising attractiveness of alternative asset classes for Sovereign Wealth Funds,Finance,B,B,stop,1
+214,mf_0214,"Rapidly changing behaviours in 2020 are accelerating consumer embrace of digital, health, and sustainability trends, says PwC",Industry,D,A,stop,0
+215,mf_0215,China’s semiconductor industry remains on the upswing,Technology,F,F,stop,1
+216,mf_0216,Key English Accelerator - Online Course,Business & Management,A,F,stop,0
+217,mf_0217,Playing with the future: PwC’s immersive emerging tech experience,Technology,F,F,stop,1
+218,mf_0218,The COVID-19 crisis has accelerated the Digital Transformation across industries and can lead to a wave of consolidation in the TMT sector,Technology,F,D,stop,0
+219,mf_0219,The Internet of Things,Technology,F,F,stop,1
+220,mf_0220,2016 Family business Survey,Business & Management,A,A,stop,1
+221,mf_0221,Cash Flow Statements,Tax & Accounting,E,E,stop,1
+222,mf_0222,Internal Controls Advisory,Government & Controls,C,E,stop,0
+223,mf_0223,Online Gambler Outlook,Industry,D,D,stop,1
+224,mf_0224,Annual report 2016: Creating a technology enabled business transcript,Tax & Accounting,E,B,stop,0
+225,mf_0225,Asset management and COVID-19: Emerging stronger from uncertain times,Finance,B,B,stop,1
+226,mf_0226,COVID-19: What US business leaders should know,Business & Management,A,A,stop,1
+227,mf_0227,Deal summary Investium Group Oy / Titanium Oyj,Finance,B,B,stop,1
+228,mf_0228,Legislative compliance,Government & Controls,C,C,stop,1
+229,mf_0229,PwC’s Family Office Services: Protecting and structuring your family wealth,Business & Management,A,B,stop,0
+230,mf_0230,COSO Enterprise Risk Management–Integrating with Strategy and Performance,Business & Management,A,A,stop,1
+231,mf_0231,Candidate assessment,Business & Management,A,A,stop,1
+232,mf_0232,New global initiative to help harness technology to tackle environmental issues.,Business & Management,A,F,stop,0
+233,mf_0233,Real estate law - what can investors expect in 2018?,Industry,D,C,stop,0
+234,mf_0234,Deal summary Valio Oy / Chr.Hansen A/S,Finance,B,A,stop,0
+235,mf_0235,Tax and legal news 10 February 2017,Tax & Accounting,E,E,stop,1
+236,mf_0236,PwC rated as a Leader in AI Consulting,Technology,F,F,stop,1
+237,mf_0237,Business Driven CIO Advisory,Business & Management,A,F,stop,0
+238,mf_0238,Building and rebuilding: Managing through change in Australia: Global Family Business Survey 2016: PwC,Business & Management,A,A,stop,1
+239,mf_0239,Transportation and Logistics Industry,Industry,D,D,stop,1
+240,mf_0240,Employment matters,Business & Management,A,A,stop,1
+241,mf_0241,Risk assurance - Cyber security - Manage digital security,Technology,F,F,stop,1
+242,mf_0242,Creating value beyond the deal: Technology media & telecommunications,Technology,F,D,stop,0
+243,mf_0243,Deals,Finance,B,B,stop,1
+244,mf_0244,PwC launches its start-up accelerator program in Warsaw,Business & Management,A,A,stop,1
+245,mf_0245,Deal summary Neste Oyj / OFI InfraVia,Finance,B,B,stop,1
+246,mf_0246,Strategy and growth,Business & Management,A,A,stop,1
+247,mf_0247,Annual report 2016: Our awards,Tax & Accounting,E,A,stop,0
+248,mf_0248,Business Recovery Services,Business & Management,A,A,stop,1
+249,mf_0249,Bitcoin: PwC,Technology,F,E,stop,0
+250,mf_0250,The new European Commission's priorities for 2021-2027,Government & Controls,C,C,stop,1
+251,mf_0251,PwC's Global Consumer Insights Survey 2020,Industry,D,A,stop,0
+252,mf_0252,FinTech 2017,Finance,B,F,stop,0
+253,mf_0253,Workforce of the future: The competing forces shaping 2030,Business & Management,A,A,stop,1
+254,mf_0254,2018 State of the Internal Audit Profession Study,Tax & Accounting,E,C,stop,0
+255,mf_0255,Financial Reporting and Accounting Advisory Services,Tax & Accounting,E,E,stop,1
+256,mf_0256,Deal summary Herrmans Oy Ab,Finance,B,B,stop,1
+257,mf_0257,Compensation scheme for self-employed persons - now also for freelancers,Tax & Accounting,E,C,stop,0
+258,mf_0258,10 Minutes on the OECD's BEPS project,Tax & Accounting,E,E,stop,1
+259,mf_0259,Responding to the potential business impacts of COVID-19,Business & Management,A,A,stop,1
+260,mf_0260,19th CEO Survey,Business & Management,A,A,stop,1
+261,mf_0261,Energy and Utilities Industry,Industry,D,D,stop,1
+262,mf_0262,The financial sector under pressure of change,Finance,B,B,stop,1
+263,mf_0263,Mergers & Acquisitions Tax Services,Finance,B,E,stop,0
+264,mf_0264,Mergers & Acquisitions Advisory,Finance,B,B,stop,1
+265,mf_0265,PwC: Upskilling your workforce should remain a key priority even in an uncertain world,Business & Management,A,A,stop,1
+266,mf_0266,Ethics and business conduct,Business & Management,A,A,stop,1
+267,mf_0267,The Healthy Sense Award presents the 2020 shortlist of nominees,Industry,D,A,stop,0
+268,mf_0268,IFRS 16 Leases,Tax & Accounting,E,E,stop,1
+269,mf_0269,The Digital Healthcare Leap,Industry,D,F,stop,0
+270,mf_0270,Tax and legal news 7 October 2016,Tax & Accounting,E,E,stop,1
+271,mf_0271,"IFRS news, August 2018",Tax & Accounting,E,E,stop,1
+272,mf_0272,Insurance,Finance,B,B,stop,1
+273,mf_0273,Consumer insights about transport & delivery 2018,Industry,D,D,stop,1
+274,mf_0274,Global Consumer Insights Survey 2019,Industry,D,A,stop,0
+275,mf_0275,2017 Oil and Gas Trends,Industry,D,D,stop,1
+276,mf_0276,The digital transformation,Technology,F,F,stop,1
+277,mf_0277,Prepare your SAP for no-deal Brexit,Technology,F,F,stop,1
+278,mf_0278,Cybersecurity and Privacy,Technology,F,F,stop,1
+279,mf_0279,Success factors: Tech’s appeal in Greece: Global Family Business Survey 2016: PwC,Business & Management,A,F,stop,0
+280,mf_0280,Performance assurance services,Tax & Accounting,E,E,stop,1
+281,mf_0281,Central Government Reforms: “Transforming Policy to Action”,Government & Controls,C,C,stop,1
+282,mf_0282,Auditing and accounting,Tax & Accounting,E,E,stop,1
+283,mf_0283,Emerging Trends in Real Estate®: Europe 2018,Industry,D,D,stop,1
+284,mf_0284,Deal summary OneMed Group Oy / Megra Oy,Finance,B,B,stop,1
+285,mf_0285,Corporate Income Tax,Tax & Accounting,E,E,stop,1
+286,mf_0286,Further important changes in income taxes and the Polish Tax Code,Tax & Accounting,E,E,stop,1
+287,mf_0287,Actuarial services contact form,Finance,B,B,stop,1
+288,mf_0288,Deal summary Mankkaan Taksi Oy / Cabonline Group,Finance,B,A,stop,0
+289,mf_0289,Fraud Risk Management,Government & Controls,C,B,stop,0
+290,mf_0290,Finance and investment audit,Tax & Accounting,E,B,stop,0
+291,mf_0291,Tax and legal news 26 January 2017,Tax & Accounting,E,E,stop,1
+292,mf_0292,PwC launches new tool to help organisations assess their workforce strategy,Business & Management,A,A,stop,1
+293,mf_0293,IFRS news - June 2017,Tax & Accounting,E,E,stop,1
+294,mf_0294,Deal summary OFI InfraVia / Outokumpu Oyj,Finance,B,A,stop,0
+295,mf_0295,Leaders need to take responsibility for — and action on — responsible AI practices,Technology,F,F,stop,1
+296,mf_0296,Global 100 Software Leaders report,Technology,F,F,stop,1
+297,mf_0297,"IFRS news, October 2017",Tax & Accounting,E,E,stop,1
+298,mf_0298,Energy Deals 2019,Industry,D,D,stop,1
+299,mf_0299,The impacts of COVID-19 on taxation in Finland,Tax & Accounting,E,E,stop,1
+300,mf_0300,System process assurance,Tax & Accounting,E,F,stop,0
+301,mf_0301,"IFRS news, April 2020",Tax & Accounting,E,E,stop,1
+302,mf_0302,Diversity and inclusion,Business & Management,A,A,stop,1
+303,mf_0303,PwC's 21st CEO Survey: Key findings from the asset and wealth management industry,Finance,B,B,stop,1
+304,mf_0304,Implementation of the filing of combined withholding tax returns and social security declarations postponed (again),Finance,B,E,stop,0
+305,mf_0305,Responding to the potential business impacts of COVID-19,Business & Management,A,A,stop,1
+306,mf_0306,Insurance Banana Skins 2017,Finance,B,B,stop,1
+307,mf_0307,IFRS reporting,Tax & Accounting,E,E,stop,1
+308,mf_0308,Tax rate benchmarking: Retail sector,Industry,D,E,stop,0
+309,mf_0309,The Danish Ministry of Taxation publishes Bill to adjust the Danish tonnage tax scheme and the DIS scheme,Tax & Accounting,E,E,stop,1
+310,mf_0310,PwC Appoints Pete Brown to co-lead Global People and Organisation Services,Business & Management,A,A,stop,1
+311,mf_0311,What is ESG?,Business & Management,A,B,stop,0
+312,mf_0312,Emerging Trends in Real Estate® - Europe 2018,Industry,D,D,stop,1
+313,mf_0313,Data consumption,Technology,F,F,stop,1
+314,mf_0314,Deal summary AinaCom Oy,Finance,B,B,stop,1
+315,mf_0315,Tax services,Tax & Accounting,E,E,stop,1
+316,mf_0316,Healthcare CEOs concerned about cyber threats but few are taking action,Industry,D,F,stop,0
+317,mf_0317,PwC Named a Leader in Strategic Risk Management Consulting,Government & Controls,C,A,stop,0
+318,mf_0318,Deal summary Veho Oy Ab,Finance,B,A,stop,0
+319,mf_0319,HR system transformation,Business & Management,A,F,stop,0
+320,mf_0320,Traditional TV and home video,Industry,D,D,stop,1
+321,mf_0321,Tax Flash: New Investment Incentive Law,Tax & Accounting,E,E,stop,1
+322,mf_0322,Global Economic Crime Survey 2016,Government & Controls,C,B,stop,0
+323,mf_0323,The circular economy model,Industry,D,A,stop,0
+324,mf_0324,PwC Named a Leader in HR Operations Consulting,Business & Management,A,A,stop,1
+325,mf_0325,PwC rated as a Leader for Global Cybersecurity Consulting,Technology,F,F,stop,1
+326,mf_0326,Ethics & Compliance,Government & Controls,C,C,stop,1
+327,mf_0327,IFRS news,Tax & Accounting,E,E,stop,1
+328,mf_0328,Tax accounting,Tax & Accounting,E,E,stop,1
+329,mf_0329,Deal summary Korona Invest / Intera Partners,Finance,B,B,stop,1
+330,mf_0330,Deal summary Neste Oyj / OFI InfraVia,Finance,B,B,stop,1
+331,mf_0331,Employee’s Capital Pension Scheme – updated draft of new regulations has been published,Finance,B,C,stop,0
+332,mf_0332,Audit and assurance services contact form,Tax & Accounting,E,E,stop,1
+333,mf_0333,Growth through Innovation: “PwC's Accelerator”,Business & Management,A,A,stop,1
+334,mf_0334,Emerging Trends in Real Estate: The Global Outlook 2019,Industry,D,D,stop,1
+335,mf_0335,Coronavirus (COVID-19),Industry,D,C,stop,0
+336,mf_0336,M&A Lead Advisory,Finance,B,B,stop,1
+337,mf_0337,PwC named a Leader in the IDC MarketScape for Worldwide Risk Consulting Services,Government & Controls,C,A,stop,0
+338,mf_0338,White list of VAT taxpayers will come into force in September 2019,Tax & Accounting,E,E,stop,1
+339,mf_0339,Communications Review / Mobile data analytics: not just for consumers any more,Technology,F,F,stop,1
+340,mf_0340,EU-gateway,Government & Controls,C,F,stop,0
+341,mf_0341,Emerging Trends in Real Estate®: Europe 2019,Industry,D,D,stop,1
+342,mf_0342,Private Equity & Digital Transformation,Finance,B,B,stop,1
+343,mf_0343,People: Unlock competencies that drive growth,Business & Management,A,A,stop,1
+344,mf_0344,PSD2 (Revised Payment Service Directive),Finance,B,C,stop,0
+345,mf_0345,The 2015 Global Innovation 1000,Business & Management,A,F,stop,0
+346,mf_0346,Impact on society and our planet: PwC - Global Annual Review 2020,Business & Management,A,A,stop,1
+347,mf_0347,"Volatility, uncertainty and major disruptions are pushing companies to lift and shift their supply chains quickly, PwC report says",Industry,D,A,stop,0
+348,mf_0348,Employment law,Business & Management,A,C,stop,0
+349,mf_0349,PwC's 21st CEO Survey: key findings from the healthcare industry,Industry,D,D,stop,1
+350,mf_0350,Tax and legal news 24 March 2017,Tax & Accounting,E,E,stop,1
+351,mf_0351,Private equity,Finance,B,B,stop,1
+352,mf_0352,Deal summary Vaaka Partners Oy / Unisport Scandinavia AB,Finance,B,B,stop,1
+353,mf_0353,New rules of control of certain transactions involving entities outside the EU and its potential impact on M&A transactions | PwC,Finance,B,C,stop,0
+354,mf_0354,"Tax and legal news, May 2018",Tax & Accounting,E,E,stop,1
+355,mf_0355,The PwC 2017 annual report. Our performance over the past year captured in videos data and infographics. data and infographics.,Tax & Accounting,E,A,stop,0
+356,mf_0356,Entertainment & Media Outlook in Italy 2017-2021,Industry,D,D,stop,1
+357,mf_0357,Entering the US securities market,Finance,B,B,stop,1
+358,mf_0358,Annual report 2016: Our financial highlights transcript,Tax & Accounting,E,B,stop,0
+359,mf_0359,COVID-19: Four essential crisis management lessons,Business & Management,A,A,stop,1
+360,mf_0360,Uncharted waters: Tackling reinsurers’ riskiest exposures,Finance,B,B,stop,1
+361,mf_0361,Energy App,Industry,D,F,stop,0
+362,mf_0362,"Tax and Legal News, November 2020",Tax & Accounting,E,E,stop,1
+363,mf_0363,Tax Flash: New tax bill,Tax & Accounting,E,E,stop,1
+364,mf_0364,PwC’s COVID-19 CFO Pulse ,Business & Management,A,B,stop,0
+365,mf_0365,"Working Capital Report 2018/19,Working Capital Report 2018/19",Tax & Accounting,E,B,stop,0
+366,mf_0366,PwC’s Financial Crime Unit plans to employ 300 more staff in the next two years,Government & Controls,C,B,stop,0
+367,mf_0367,19th Global CEO Survey: Redefining business success in a changing world,Business & Management,A,A,stop,1
+368,mf_0368,PwC’s 2018 Annual Corporate Directors Survey,Business & Management,A,A,stop,1
+369,mf_0369,Internal audit analytics,Tax & Accounting,E,C,stop,0
+370,mf_0370,"Energy, utilities & resources",Industry,D,D,stop,1
+371,mf_0371,Mergers & Acquisitions,Finance,B,B,stop,1
+372,mf_0372,Are Real Estate CEOs missing out on the technology opportunity?,Industry,D,F,stop,0
+373,mf_0373,PwC's 21st CEO Survey: Key findings from the Real Estate industry,Industry,D,D,stop,1
+374,mf_0374,Undergraduate work placements,Business & Management,A,A,stop,1
+375,mf_0375,Sustainability & Climate Change,Business & Management,A,A,stop,1
+376,mf_0376,PwC's 21st CEO Survey: Key findings from the insurance industry,Finance,B,D,stop,0
+377,mf_0377,Treasury change,Tax & Accounting,E,C,stop,0
+378,mf_0378,Global Entertainment and Media Outlook 2018-2022,Industry,D,D,stop,1
+379,mf_0379,What was 2020 for the retail sector? | PwC,Industry,D,D,stop,1
+380,mf_0380,HR Technology and Analytics,Business & Management,A,F,stop,0
+381,mf_0381,PwC opens Cyber Security Experience Centre in Israel,Technology,F,F,stop,1
+382,mf_0382,Cyber threats topple over-regulation as top risk for Banking and Capital Markets CEOs,Technology,F,F,stop,1
+383,mf_0383,Business Continuity Plan and Actions for Contact Centres,Business & Management,A,A,stop,1
+384,mf_0384,CEO & Family Business Survey 2016,Business & Management,A,A,stop,1
+385,mf_0385,Asset & Wealth Management Revolution: Embracing Exponential Change ,Finance,B,B,stop,1
+386,mf_0386,Real estate transaction services,Industry,D,D,stop,1
+387,mf_0387,Women in Work Index 2020,Business & Management,A,A,stop,1
+388,mf_0388,Family Business Survey 2018,Business & Management,A,A,stop,1
+389,mf_0389,Enterprise Applications,Technology,F,F,stop,1
+390,mf_0390,Deals,Finance,B,B,stop,1
+391,mf_0391,Emerging Trends in Real Estate®: Europe 2020 Report Launch,Industry,D,D,stop,1
+392,mf_0392,Successful HR Practitioner,Business & Management,A,A,stop,1
+393,mf_0393,PwC Legal reinforces its real estate law practice,Industry,D,A,stop,0
+394,mf_0394,Global Employee Mobility,Business & Management,A,A,stop,1
+395,mf_0395,Deal Announcement Katsastus Kovalainen and Q-katsastus,Finance,B,A,stop,0
+396,mf_0396,Business Writing Skills in the Digital Age,Business & Management,A,A,stop,1
+397,mf_0397,Data and Analytics (D&A),Technology,F,F,stop,1
+398,mf_0398,Private Equity,Finance,B,B,stop,1
+399,mf_0399,Cyber risk considerations and impacts,Technology,F,F,stop,1
+400,mf_0400,Deal summary Turun Kauppaopetussäätiö / Auratum Real Estate Ltd,Finance,B,B,stop,1
+401,mf_0401,System Process Assurance,Tax & Accounting,E,C,stop,0
+402,mf_0402,Better by design: Innovation and new product development in Denmark: Global Family Business Survey 2016: PwC,Business & Management,A,A,stop,1
+403,mf_0403,The finance function of the future: IFRS 17,Tax & Accounting,E,E,stop,1
+404,mf_0404,Successfully Developing Innovative Drugs and Enhancing R&D Productivity,Industry,D,D,stop,1
+405,mf_0405,Insurance’s new normal Driving innovation with InsurTech,Finance,B,D,stop,0
+406,mf_0406,Proposed Amendments for Regulations Regarding Financial Restructuring Have Been Introduced,Finance,B,C,stop,0
+407,mf_0407,Individual Taxation,Tax & Accounting,E,E,stop,1
+408,mf_0408,Global tech IPOs in 2016 fell to their lowest level this decade,Finance,B,B,stop,1
+409,mf_0409,19th Annual Global CEO Survey: Private Company View,Business & Management,A,A,stop,1
+410,mf_0410,European IPO market looks set to shrug off uncertainty to reach €25bn in 2016,Finance,B,B,stop,1
+411,mf_0411,Industry 4.0: Building the Digital Enterprise,Technology,F,F,stop,1
+412,mf_0412,Private Equity,Finance,B,B,stop,1
+413,mf_0413,Tax and legal news 25 February 2016,Tax & Accounting,E,E,stop,1
+414,mf_0414,Brand communication during a pandemic. Time for storydoing,Business & Management,A,A,stop,1
+415,mf_0415,Transform Your Organization to Adapt Post COVID-19,Business & Management,A,A,stop,1
+416,mf_0416,Workforce Strategy,Business & Management,A,A,stop,1
+417,mf_0417,Global employee mobility: Technology and efficiency,Business & Management,A,F,stop,0
+418,mf_0418,Tax strategy  & operations,Tax & Accounting,E,E,stop,1
+419,mf_0419,Get more than an accountant,Tax & Accounting,E,E,stop,1
+420,mf_0420,Financial services organisations need to 'walk the diversity talk' to tap into the whole talent market,Business & Management,A,B,stop,0
+421,mf_0421,New solidarity tax for the richest taxpayers and new social security contribution – practical impact overview,Finance,B,E,stop,0
+422,mf_0422,PwC’s COVID-19 CFO Pulse,Business & Management,A,B,stop,0
+423,mf_0423,Strategy,Business & Management,A,A,stop,1
+424,mf_0424,Work in Assurance,Tax & Accounting,E,E,stop,1
+425,mf_0425,Annual report 2016: Climate Week,Business & Management,A,B,stop,0
+426,mf_0426,World CEOs turning to Germany for growth,Business & Management,A,A,stop,1
+427,mf_0427,21st CEO Survey: The Anxious Optimist in the Corner Office,Business & Management,A,A,stop,1
+428,mf_0428,NVIDIA Deep Learning,Technology,F,F,stop,1
+429,mf_0429,Blockchain: PwC,Technology,F,F,stop,1
+430,mf_0430,#amnc18: How will AI impact the job market in China?,Technology,F,F,stop,1
+431,mf_0431,Payroll Outsourcing: Discipline leading to Innovation,Business & Management,A,A,stop,1
+432,mf_0432,Digital Revolution and Open Banking,Finance,B,B,stop,1
+433,mf_0433,Deal summary Veho Oy Ab,Finance,B,A,stop,0
+434,mf_0434,Deal summary Vapo Oy,Finance,B,B,stop,1
+435,mf_0435,Social security services,Finance,B,C,stop,0
+436,mf_0436,ALM Intelligence rates PwC a global leader in retirement benefits consulting,Business & Management,A,A,stop,1
+437,mf_0437,CEO confidence rises despite new risks and uncertainty,Business & Management,A,A,stop,1
+438,mf_0438,Global CEO Pulse Survey on Innovation,Business & Management,A,A,stop,1
+439,mf_0439,Tax and legal news 16 June 2017,Tax & Accounting,E,E,stop,1
+440,mf_0440,Transaction services,Finance,B,B,stop,1
+441,mf_0441,Assurance and financial reporting,Tax & Accounting,E,E,stop,1
+442,mf_0442,"Energy, utilities and resources",Industry,D,D,stop,1
+443,mf_0443,Databrain: Data Governance for Analytics,Technology,F,F,stop,1
+444,mf_0444,Assurance,Tax & Accounting,E,E,stop,1
+445,mf_0445,Tax and legal news 20 April 2017,Tax & Accounting,E,E,stop,1
+446,mf_0446,Indirect Taxes,Tax & Accounting,E,E,stop,1
+447,mf_0447,Cyber threats topple over-regulation as top risk for Banking and Capital Markets CEOs,Technology,F,F,stop,1
+448,mf_0448,Deal summary Folmer Management Oy / Cockerill Maintenance & Ingénierie (CMI),Finance,B,A,stop,0
+449,mf_0449,Presenting a United Front on Financial Crimes,Government & Controls,C,C,stop,1
+450,mf_0450,How PwC’s Food Trust Platform protects Australian brands from food fraud,Government & Controls,C,F,stop,0
+451,mf_0451,Tax Flash February 2015,Tax & Accounting,E,E,stop,1
+452,mf_0452,Digital transformation in customer and operations,Technology,F,F,stop,1
+453,mf_0453,IFRS 17/TFRS 17 Insurance Contracts,Finance,B,E,stop,0
+454,mf_0454,Global employee mobility,Business & Management,A,A,stop,1
+455,mf_0455,Emerging Trends in Real Estate®: Europe 2018,Industry,D,D,stop,1
+456,mf_0456,"Tax and legal news, January 2020",Tax & Accounting,E,E,stop,1
+457,mf_0457,PwC's Insights: Greek entrepreneurship at the crossroads,Business & Management,A,A,stop,1
+458,mf_0458,Robo Advisory moves forward in Italy,Technology,F,B,stop,0
+459,mf_0459,Fit for Growth,Business & Management,A,A,stop,1
+460,mf_0460,Insurance,Finance,B,B,stop,1
+461,mf_0461,US tax reform,Tax & Accounting,E,E,stop,1
+462,mf_0462,PwC Women in Work Index: Closing the gender pay gap,Business & Management,A,A,stop,1
+463,mf_0463,Project Management Services,Business & Management,A,A,stop,1
+464,mf_0464,Digital Fitness Assessment,Technology,F,F,stop,1
+465,mf_0465,PwC rated as a leader in robotic process automation (RPA) service providers in health industries report by independent research firm,Technology,F,F,stop,1
+466,mf_0466,The impact of Brexit on the free flow of data,Government & Controls,C,F,stop,0
+467,mf_0467,Statistical Analysis with MS Excel,Technology,F,F,stop,1
+468,mf_0468,Strategy & Operations,Business & Management,A,A,stop,1
+469,mf_0469,Deal summary FuturSoft Oy / Vitec Software Group,Finance,B,A,stop,0
+470,mf_0470,Tax accounting services,Tax & Accounting,E,E,stop,1
+471,mf_0471,PwC Global CIO recognised in Premier 100 Technology Leadership Awards.,Business & Management,A,F,stop,0
+472,mf_0472,Internet access,Technology,F,F,stop,1
+473,mf_0473,Audit and Assurance Services,Tax & Accounting,E,E,stop,1
+474,mf_0474,Summary of planned changes in PIT from 1st January 2019,Tax & Accounting,E,E,stop,1
+475,mf_0475,SAF-T in Poland – the number of tax audits using SAF-T is increasing,Tax & Accounting,E,E,stop,1
+476,mf_0476,"Strong values drive growth for family business amid disruption fears, finds PwC global survey",Business & Management,A,A,stop,1
+477,mf_0477,Crisis Management & Forensic Intelligence,Government & Controls,C,A,stop,0
+478,mf_0478,Deal execution,Finance,B,B,stop,1
+479,mf_0479,Tax technology,Tax & Accounting,E,E,stop,1
+480,mf_0480,Technology,Technology,F,F,stop,1
+481,mf_0481,Tax and legal news 26 September 2016,Tax & Accounting,E,E,stop,1
+482,mf_0482,Insights about consumers and artificial intelligence 2018,Industry,D,F,stop,0
+483,mf_0483,PwC: Forty percent of Russian companies have no information security strategy,Technology,F,F,stop,1
+484,mf_0484,Telecommunications,Technology,F,D,stop,0
+485,mf_0485,10 trends in polish healthcare 2016,Industry,D,D,stop,1
+486,mf_0486,Emerging Trends in Real Estate® Europe 2017,Industry,D,D,stop,1
+487,mf_0487,Insurance and legacy solutions,Finance,B,B,stop,1
+488,mf_0488,Shifting patterns: the future of the logistics industry,Industry,D,D,stop,1
+489,mf_0489,Hitting the sweet spot: Growth and diversification in Japan: Global Family Business Survey 2016: PwC,Business & Management,A,A,stop,1
+490,mf_0490,On 30 October 2018 the Constitutional Tribunal will decide if removal of the annual limit of the pension and disability contributions is consistent with the Polish Constitution,Finance,B,C,stop,0
+491,mf_0491,2019 AI Predictions: Six priorities you can’t afford to ignore,Technology,F,F,stop,1
+492,mf_0492,Annual report 2016: My PwC transcript,Tax & Accounting,E,E,stop,1
+493,mf_0493,Employment Law Bulletin March 2020,Business & Management,A,C,stop,0
+494,mf_0494,FinTech,Finance,B,F,stop,0
+495,mf_0495,The digital healthcare leap,Industry,D,F,stop,0
+496,mf_0496,Assessing the global transport infrastructure market: Outlook to 2025,Industry,D,D,stop,1
+497,mf_0497,Actuarial services,Finance,B,B,stop,1
+498,mf_0498,Customer experience and payment behaviours in the PSD2 context,Finance,B,B,stop,1
+499,mf_0499,Corporate Responsibility,Business & Management,A,A,stop,1
+500,mf_0500,2015 CEO Success study,Business & Management,A,A,stop,1
+501,mf_0501,Strategy & Operations,Business & Management,A,A,stop,1
+502,mf_0502,Transfer pricing in an exceptional circumstances,Tax & Accounting,E,E,stop,1
+503,mf_0503,Risk Assurance: Solutions for today's complex business landscape,Tax & Accounting,E,A,stop,0
+504,mf_0504,Personal Data Protection Bulletin June 2019,Government & Controls,C,C,stop,1
+505,mf_0505,‘Failing your way to success’: Longevity and entrepreneurship in the US: Global Family Business Survey 2016: PwC,Business & Management,A,A,stop,1
+506,mf_0506,Transfer Pricing,Tax & Accounting,E,E,stop,1
+507,mf_0507,About Business Advisory Services,Business & Management,A,A,stop,1
+508,mf_0508,People & Change,Business & Management,A,A,stop,1
+509,mf_0509,Global Digital Operations Survey 2018,Technology,F,F,stop,1
+510,mf_0510,Pharma,Industry,D,D,stop,1
+511,mf_0511,SOX and internal control,Government & Controls,C,C,stop,1
+512,mf_0512,Tax and legal news 10 March 2017,Tax & Accounting,E,E,stop,1
+513,mf_0513,Thinking Ahead |How to relaunch passenger mobility after COVID-19 emergency,Industry,D,D,stop,1
+514,mf_0514,Global Airlines & Airports statement of capabilities – Rising to your challenges,Industry,D,D,stop,1
+515,mf_0515,Leadership in times of a crisis - Cassandra Michie,Business & Management,A,A,stop,1
+516,mf_0516,22nd CEO Survey: Healthcare and pharmaceutical trends 2019,Industry,D,D,stop,1
+517,mf_0517,Family Business Survey 2012 Italy,Business & Management,A,A,stop,1
+518,mf_0518,Deals strategy and operations,Finance,B,B,stop,1
+519,mf_0519,Paying Taxes 2017 - Tax Policy and Administration ,Tax & Accounting,E,E,stop,1
+520,mf_0520,"Technology has reduced the tax compliance burden on business, but where will the demands for increased data lead?",Technology,F,E,stop,0
+521,mf_0521,M&A advisory,Finance,B,B,stop,1
+522,mf_0522,PwC Spain - Assurance Advisory Tax and Legal services ,Tax & Accounting,E,E,stop,1
+523,mf_0523,Healthcare & pharmaceutical trends 2019,Industry,D,D,stop,1
+524,mf_0524,Deals,Finance,B,B,stop,1
+525,mf_0525,Through Digital Upskilling FS Firms are Working to Move their Workforce from Analogue to Digital,Business & Management,A,F,stop,0
+526,mf_0526,Turkey introduces a brand new digital services tax,Tax & Accounting,E,E,stop,1
+527,mf_0527,Shifting patterns: the future of the logistics industry,Industry,D,D,stop,1
+528,mf_0528,Global Entertainment and Media Outlook 2017 - 2021,Industry,D,D,stop,1
+529,mf_0529,Supply chain and procurement,Industry,D,A,stop,0
+530,mf_0530,"Tax and legal news, March 2020",Tax & Accounting,E,E,stop,1
+531,mf_0531,IAS 19 Actuarial Studies,Finance,B,E,stop,0
+532,mf_0532,"Deal summary Kymppivoima Oy, EPV Energia Oy and Helen Oy / Dong Energy",Finance,B,A,stop,0
+533,mf_0533,Government and Public Sector,Government & Controls,C,C,stop,1
+534,mf_0534,Start of people’s voting for the Healthy Sense Award,Industry,D,D,stop,1
+535,mf_0535,Deals,Finance,B,B,stop,1
+536,mf_0536,The evolving nature of the green agenda,Business & Management,A,C,stop,0
+537,mf_0537,Paying Taxes 2017 - Comparative Modeller,Tax & Accounting,E,E,stop,1
+538,mf_0538,PwC announces the short list of nominees for the Healthy Sense Book Award,Industry,D,A,stop,0
+539,mf_0539,PwC participated in the opening of the market for trading at the London Stock Exchange,Finance,B,B,stop,1
+540,mf_0540,Direct to Consumer,Industry,D,A,stop,0
+541,mf_0541,Generational transfer,Business & Management,A,B,stop,0
+542,mf_0542,Tax reporting & strategy,Tax & Accounting,E,E,stop,1
+543,mf_0543,Taxes in Iceland,Tax & Accounting,E,E,stop,1
+544,mf_0544,Information Security Strategy,Technology,F,F,stop,1
+545,mf_0545,Removal of the annual limit of the pension and disability contributions – employment costs are to increase,Finance,B,E,stop,0

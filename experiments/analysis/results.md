@@ -14,6 +14,7 @@
 | ARC-Challenge | `nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-NVFP4` | deterministic MCQ scoring |
 | MATH-500 | `nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-NVFP4` | `nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-NVFP4` |
 | Last Letter Concatenation | `nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-NVFP4` | exact string match |
+| MultiFin | `nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-NVFP4` | deterministic MCQ scoring (A–F) |
 
 ---
 
@@ -27,8 +28,9 @@
 | ARC-Challenge | MCQ (science) | 0.968 | −0.001 | −0.003 | −0.006 | −0.010 | −0.003 |
 | MATH-500 | Math reasoning | 0.988 | +0.002 | +0.003 | +0.007 | +0.003 | 0.000 |
 | Last Letter | Symbolic string | 0.983 | +0.003 | +0.008 | +0.004 | −0.002 | −0.014 |
+| MultiFin | Financial MCQ | 0.729 | +0.016 | +0.016 | +0.009 | 0.000 | **+0.031** |
 
-**Key pattern:** TruthfulQA is the only benchmark where perturbations cause consistent negative Δ. Capability benchmarks (ARC, MATH-500, Last Letter) are all within ±1.5pp across every perturbation type — Nemotron-120B is robust to prompt surface changes on knowledge and reasoning tasks.
+**Key pattern:** TruthfulQA is the only benchmark where perturbations cause consistent negative Δ. All capability benchmarks (ARC, MATH-500, Last Letter, MultiFin) are within ±3.5pp across every perturbation type — Nemotron-120B is robust to prompt surface changes on knowledge and reasoning tasks. MultiFin shows small positive Δ under every perturbation, suggesting few-shot and format cues provide slight disambiguation help on a harder classification task (72.9% baseline).
 
 ---
 
@@ -531,3 +533,45 @@ Regressions = questions baseline got right but perturbation got wrong. Recoverie
 - **JSON format restrictions have zero effect** (p1_format Δ = +0.003, p1_format_soft Δ = +0.008) — Nemotron is completely robust to format pressure on this task.
 - **Zero empty responses across all 5,000 perturbed rows.**
 - **Contrast with Tam et al. (2024):** LLaMA-3-8B dropped ~38pp and GPT-3.5 dropped ~25pp under JSON-mode on Last Letter. Nemotron-120B shows ≤1.4pp change under any perturbation — model scale largely eliminates format sensitivity on symbolic tasks.
+
+---
+
+## MultiFin × Nemotron experiment
+
+**Dataset:** `awinml/MultiFin`, config=`all_languages_highlevel`, split=test, lang=English (546 rows).
+**Task:** 6-class MCQ — classify financial article headline into one of: Business & Management, Finance, Government & Controls, Industry, Tax & Accounting, Technology (fixed options A–F).
+**Scoring:** Deterministic letter extraction (A–F); no judge needed.
+**Note on p1_format:** Prompt-level JSON instruction (no API flag) — consistent with Last Letter and MATH-500.
+
+### Batch IDs
+
+| Run | Batch ID | Rows | Output |
+|-----|----------|------|--------|
+| Baseline smoke (n=10) | `e2b6a829-75f4-46b2-83d2-a9e14f25f051` | 10 | `experiments/doubleword_batches/multifin/e2b6a829-…_multifin_baseline_eval/` |
+| Perturbed smoke (n=10) | `bcdff270-bbf8-48e7-b49f-492397f7ce85` | 50 | `experiments/doubleword_batches/multifin/bcdff270-…_multifin_perturbed_eval/` |
+| Baseline full (n=546) | `4f18bf1b-1714-4c57-be98-683e492b9ad0` | 546 | `experiments/doubleword_batches/multifin/4f18bf1b-…_multifin_baseline_eval/` |
+| Perturbed full (n=546) | `16436407-d704-409d-b8af-55de70822390` | 2730 | `experiments/doubleword_batches/multifin/16436407-…_multifin_perturbed_eval/` |
+
+Scored CSVs: `experiments/results/raw/multifin_baseline_4f18bf1b_scored.csv`, `experiments/results/raw/multifin_perturbed_16436407_scored.csv`
+
+### Results (n=546)
+
+**Baseline:** 398/546 = **0.729**
+
+| Perturbation | Accuracy | Δ vs baseline | Regressions | Recoveries | Errors |
+|---|---|---|---|---|---|
+| `p1_format` | 0.745 | +0.016 | 6 | 15 | 0 |
+| `p1_format_soft` | 0.745 | +0.016 | 6 | 15 | 0 |
+| `p2_complexity` | 0.738 | +0.009 | 13 | 18 | 0 |
+| `p4_role` | 0.729 | 0.000 | 8 | 8 | 0 |
+| `p5_fewshot` | 0.760 | **+0.031** | 11 | 28 | 0 |
+
+### Key findings
+
+- **Baseline accuracy: 0.729** — lower than other benchmarks (harder task: short ambiguous headlines, imbalanced classes, Government & Controls only 34 examples).
+- **Zero parse errors across all 2,730 perturbed rows** — Nemotron always produces a clean letter response.
+- **All perturbations show zero or positive Δ** — no format perturbation hurts performance; several help slightly.
+- **p5_fewshot is the strongest perturbation (+3.1pp, 28 recoveries vs 11 regressions)** — two worked examples provide useful disambiguation for an inherently ambiguous short-text task.
+- **p4_role (system prompt) has zero net effect** (Δ=0.000, 8 regressions, 8 recoveries) — perfectly balanced flip-flops.
+- **p1_format and p1_format_soft identical** (both +1.6pp) — the JSON suffix adds no information for MCQ letter selection but also causes no confusion.
+- **Contrast with Tam et al. (2024):** On smaller models, MultiFin MCQ accuracy dropped under format restrictions. Nemotron-120B shows no degradation — format insensitivity holds even on a genuinely harder classification task.

@@ -619,6 +619,31 @@ Tam et al. (2024) "Let Me Speak Freely?" found Last Letter Concatenation is one 
 
 ---
 
+## MultiFin × Nemotron experiment ✅ DONE
+
+**Last updated:** 2026-04-05
+**Batch root:** `experiments/doubleword_batches/multifin/`
+**Eval model:** `nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-NVFP4`
+**Dataset:** `awinml/MultiFin`, config=`all_languages_highlevel`, split=test, lang=English (546 rows)
+**Scoring:** Deterministic MCQ letter match (A–F) — no judge needed.
+
+### Steps
+
+| Step | Status | Artifact |
+|---|---|---|
+| Data: loader + perturbations | ✅ | `data/baseline/multifin_baseline.csv` (546 rows), `data/perturbations/multifin_perturbed.csv` (2,730 rows) |
+| Eval: baseline + perturbed scripts, submit batches | ✅ | Baseline `4f18bf1b` (546 rows), Perturbed `16436407` (2,730 rows) |
+| Score + Analysis: letter match, Δ by type, results.md | ✅ | `scripts/score_multifin.py`; CSVs in `experiments/results/raw/`; `experiments/analysis/results.md` |
+
+### Key design decisions
+
+- **n=546:** All English test rows (no separate English-only test split; English rows filtered from `all_languages_highlevel` test).
+- **Fixed A–F options:** Labels are constant across all examples — no per-example MCQ shuffling needed.
+- **p1_format:** Prompt-level JSON instruction (no API flag — same pattern as Last Letter, MATH-500).
+- **p5_fewshot examples:** Taken from `only_english_highlevel` train split: "Legal Flash: Social security of freelancers update → B (Finance)" and "Revenue Recognition → E (Tax & Accounting)".
+
+---
+
 ## Risk Mitigations
 
 | Risk | Mitigation |
