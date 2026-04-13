@@ -20,7 +20,7 @@ from tqdm import tqdm
 load_dotenv()
 
 DOUBLEWORD_BASE_URL = "https://api.doubleword.ai/v1"
-DEFAULT_COMPLETION_WINDOW = "1h"
+DEFAULT_COMPLETION_WINDOW = "24h"
 
 # Available models (https://app.doubleword.ai/models)
 # Model                                Intelligence  Cost (input/M)  Context  Released
@@ -43,11 +43,20 @@ NEMOTRON_TQA_EVAL_MODEL = "nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-NVFP4"
 # MATH-500 × Nemotron experiment: same model
 MATH500_EVAL_MODEL = "nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-NVFP4"
 
+# Qwen3.5-397B eval model (used for cross-model comparison runs)
+QWEN_EVAL_MODEL = "Qwen/Qwen3.5-397B-A17B-FP8"
+
 # Local folders for batch JSONL (input.jsonl + output.jsonl per batch_id_label/)
 DEFAULT_BATCH_ROOT = os.path.join("experiments", "doubleword_batches")
 ARC_BATCH_ROOT = os.path.join("experiments", "doubleword_batches", "arc")
 NEMOTRON_TQA_BATCH_ROOT = os.path.join("experiments", "doubleword_batches", "nemotron_tqa")
 MATH500_BATCH_ROOT = os.path.join("experiments", "doubleword_batches", "math500")
+
+# Qwen cross-model comparison batch roots (one folder per benchmark)
+ARC_QWEN_BATCH_ROOT = os.path.join("experiments", "doubleword_batches", "arc_qwen")
+MATH500_QWEN_BATCH_ROOT = os.path.join("experiments", "doubleword_batches", "math500_qwen")
+LAST_LETTER_QWEN_BATCH_ROOT = os.path.join("experiments", "doubleword_batches", "last_letter_qwen")
+MULTIFIN_QWEN_BATCH_ROOT = os.path.join("experiments", "doubleword_batches", "multifin_qwen")
 
 
 def model_uses_no_think_user_prefix(model: str) -> bool:

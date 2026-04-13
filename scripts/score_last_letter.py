@@ -28,6 +28,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -40,16 +41,41 @@ _PERTURBED_CSV = _REPO / "data" / "perturbations" / "last_letter_perturbed.csv"
 JSON_TYPES = {"p1_format", "p1_format_soft"}
 
 
+def strip_thinking(content: str) -> str:
+    """Strip Qwen-style <think>...</think> reasoning block, return text after it."""
+    if "</think>" in content:
+        return content.split("</think>", 1)[1].strip()
+    # Also handle plain "Thinking Process:\n...\n\n" preamble (no tags)
+    if "Thinking Process:" in content:
+        # Take everything after the last blank line following the thinking block
+        parts = content.rsplit("\n\n", 1)
+        if len(parts) == 2:
+            return parts[1].strip()
+    return content
+
+
 def extract_answer(content: str, perturbation_type: str) -> str:
     """Extract the answer string from model response."""
     content = content.strip()
     if not content:
         return ""
+    content = strip_thinking(content)
     if perturbation_type in JSON_TYPES:
+        # Strip markdown code fences before JSON parsing
+        stripped = content.strip("`").strip()
+        if stripped.startswith("json"):
+            stripped = stripped[4:].strip()
         try:
-            return json.loads(content).get("answer", content).strip()
+            return json.loads(stripped).get("answer", content).strip()
         except (json.JSONDecodeError, AttributeError):
             pass
+    # Strip "Answer: " prefix (from p5_fewshot few-shot format)
+    if content.lower().startswith("answer:"):
+        return content[len("answer:"):].strip()
+    # Extract last **answer** bold pattern (from p2_complexity verbose explanations)
+    bold_matches = re.findall(r"\*\*([^*]+)\*\*", content)
+    if bold_matches:
+        return bold_matches[-1].strip().rstrip(".")
     return content
 
 
@@ -69,9 +95,14 @@ def load_output(output_jsonl: str) -> dict[int, dict]:
         for line in f:
             rec = json.loads(line)
             cid = int(rec["custom_id"])
-            msg = rec["response"]["body"]["choices"][0]["message"]
-            content = (msg.get("content") or "").strip()
-            finish = rec["response"]["body"]["choices"][0]["finish_reason"]
+            choices = rec.get("response", {}).get("body", {}).get("choices", [])
+            if choices:
+                msg = choices[0].get("message", {})
+                content = (msg.get("content") or "").strip()
+                finish = choices[0].get("finish_reason")
+            else:
+                content = ""
+                finish = "error"
             records[cid] = {"content": content, "finish_reason": finish}
     return records
 

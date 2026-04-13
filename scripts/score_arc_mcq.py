@@ -48,6 +48,17 @@ def _repo_root() -> Path:
     return Path(__file__).resolve().parent.parent
 
 
+def strip_thinking(content: str) -> str:
+    """Strip Qwen-style <think>...</think> reasoning block, return text after it."""
+    if "</think>" in content:
+        return content.split("</think>", 1)[1].strip()
+    if "Thinking Process:" in content:
+        parts = content.rsplit("\n\n", 1)
+        if len(parts) == 2:
+            return parts[1].strip()
+    return content
+
+
 def message_text_from_record(rec: dict, *, content_only: bool) -> str:
     """Visible assistant text for scoring: ``message.content``, else ``reasoning_content`` when allowed.
 
@@ -68,14 +79,14 @@ def message_text_from_record(rec: dict, *, content_only: bool) -> str:
         finish_reason = choice.get("finish_reason")
     except (KeyError, IndexError, TypeError):
         return ""
-    content = (msg.get("content") or "").strip()
+    content = strip_thinking((msg.get("content") or "").strip())
     if content_only:
         return content
     if content:
         return content
     if finish_reason == "length":
         return ""
-    return (msg.get("reasoning_content") or "").strip()
+    return strip_thinking((msg.get("reasoning_content") or "").strip())
 
 
 def extract_letter_from_json_text(text: str) -> str | None:

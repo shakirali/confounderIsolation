@@ -162,6 +162,7 @@ def run_judge(
     completion_window: str = DEFAULT_COMPLETION_WINDOW,
     judge_batch_id: str | None = None,
     label: str = "math500_baseline_judge",
+    batch_root: str = MATH500_BATCH_ROOT,
 ) -> tuple[list[int], str]:
     """Score eval responses using Nemotron judge via Doubleword batch.
 
@@ -171,16 +172,15 @@ def run_judge(
 
     if judge_batch_id:
         print(f"Downloading judge results from existing batch: {judge_batch_id}")
-        raw_results = download_results(judge_batch_id, num_requests, label=label)
-        bdir = batch_dir(judge_batch_id, label)
+        raw_results = download_results(judge_batch_id, num_requests, label=label, batch_root=batch_root)
+        bdir = batch_dir(judge_batch_id, label, batch_root=batch_root)
         return parse_scores(raw_results), bdir
 
-    pending_dir = os.path.join(MATH500_BATCH_ROOT, f"pending_{label}")
+    pending_dir = os.path.join(batch_root, f"pending_{label}")
     input_path = os.path.join(pending_dir, "input.jsonl")
     build_judge_input(df, input_path, judge_model)
 
     print(f"\nInspect input.jsonl at: {input_path}")
-    input("Press Enter to submit the judge batch (Ctrl+C to cancel)...")
 
     raw_results, submitted_batch_id = submit_batch_from_file(
         input_jsonl_path=input_path,
@@ -188,9 +188,9 @@ def run_judge(
         completion_window=completion_window,
         content_only=True,
         label=label,
-        batch_root=MATH500_BATCH_ROOT,
+        batch_root=batch_root,
     )
-    bdir = batch_dir(submitted_batch_id, label, batch_root=MATH500_BATCH_ROOT)
+    bdir = batch_dir(submitted_batch_id, label, batch_root=batch_root)
     return parse_scores(raw_results), bdir
 
 
@@ -203,6 +203,7 @@ def score_math_jsonl(
     completion_window: str = DEFAULT_COMPLETION_WINDOW,
     judge_batch_id: str | None = None,
     label: str = "math500_baseline_judge",
+    batch_root: str = MATH500_BATCH_ROOT,
 ) -> None:
     """Score MATH-500 eval responses via Nemotron judge batch.
 
@@ -221,6 +222,7 @@ def score_math_jsonl(
         completion_window=completion_window,
         judge_batch_id=judge_batch_id,
         label=label,
+        batch_root=batch_root,
     )
     df["score"] = scores
 

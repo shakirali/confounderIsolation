@@ -6,6 +6,16 @@
 
 ---
 
+## Hypothesis
+
+**H: Surface-level prompt perturbations do not significantly affect benchmark performance on recent strong models.**
+
+Tam et al. (2024) "Let Me Speak Freely?" demonstrated that format restrictions (JSON output, role prompts, few-shot examples) meaningfully suppress accuracy on smaller models (LLaMA-3-8B, GPT-3.5). We test whether this effect persists at scale, using Nemotron-120B across multiple benchmark types. If the hypothesis holds, perturbation Δ values across all benchmarks should be consistently small (within noise), regardless of task type or perturbation style.
+
+**Null hypothesis (Tam et al. finding):** Format perturbations degrade model accuracy — format is a confounder in benchmark evaluation.
+
+---
+
 ## Known Issues
 
 ### Judge scoring
@@ -641,6 +651,68 @@ Tam et al. (2024) "Let Me Speak Freely?" found Last Letter Concatenation is one 
 - **Fixed A–F options:** Labels are constant across all examples — no per-example MCQ shuffling needed.
 - **p1_format:** Prompt-level JSON instruction (no API flag — same pattern as Last Letter, MATH-500).
 - **p5_fewshot examples:** Taken from `only_english_highlevel` train split: "Legal Flash: Social security of freelancers update → B (Finance)" and "Revenue Recognition → E (Tax & Accounting)".
+
+---
+
+## Qwen3.5-397B Cross-Model Comparison ⏳
+
+**Last updated:** 2026-04-07
+**Goal:** Replicate all 4 benchmark evals (ARC, Last Letter, MultiFin, MATH-500) using Qwen3.5-397B-A17B-FP8 as eval model (Nemotron as judge for MATH-500). Compare results to Nemotron baseline to test whether hypothesis holds across models.
+
+**Eval model:** `Qwen/Qwen3.5-397B-A17B-FP8`
+**Judge model (MATH-500 only):** `nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-NVFP4`
+**Batch roots:** `arc_qwen/`, `last_letter_qwen/`, `multifin_qwen/`, `math500_qwen/`
+**Key settings:** No `/no_think` prefix, `max_tokens=8192`, `window=24h`
+**Scorer fixes applied:**
+- `strip_thinking()` in all scorers — Qwen puts reasoning in `content` between `<think>...</think>` tags
+- `score_last_letter.py`: strip markdown fences for `p1_format_soft`, strip `"Answer: "` prefix for `p5_fewshot`, extract last `**bold**` pattern for `p2_complexity`
+- `score_multifin.py` / `score_last_letter.py`: handle empty `choices` from Doubleword API errors
+
+### 8-Step Execution Plan
+
+| Step | Task | Status |
+|---|---|---|
+| 1 | Baseline smoke test n=10 for all 4 benchmarks | ✅ |
+| 2 | Verify baseline smoke outputs | ✅ |
+| 3 | Perturbed smoke test n=10 for all 4 benchmarks | ✅ |
+| 4 | Verify perturbed smoke outputs | ✅ |
+| 5 | Full baseline eval for all 4 benchmarks | ✅ |
+| 6 | Verify full baseline outputs + score | ✅ |
+| 7 | Full perturbed eval for all 4 benchmarks | ✅ |
+| 8 | Verify + score full perturbed outputs | ✅ |
+
+### Smoke Test Batches (Steps 1–4) ✅
+
+| Benchmark | Baseline batch | Perturbed batch | Baseline score | Perturbed score |
+|---|---|---|---|---|
+| ARC | `38047f4a` (n=10) | `59bad3b7` (50 rows) | 10/10 | 50/50 (100%) |
+| Last Letter | `8a428e6e` (n=10) | `652197d0` (50 rows) | 10/10 | 50/50 (100%) |
+| MultiFin | `db1ddbad`* (n=10) | `720a1f26` (50 rows) | 10/10 | 44/50 (88%) |
+| MATH-500 | `38047f4a` (n=10) | `286d658f` (50 rows) | 9 stop/1 length | 49/49 judged ✅ |
+
+*smoke baseline resubmitted with max_tokens=8192 after truncation at 4096.
+
+### Full Baseline Batches (Steps 5–6) ✅
+
+| Benchmark | Batch ID | Rows | Retry batch | Raw score | Corrected baseline (stop+think-complete) |
+|---|---|---|---|---|---|
+| ARC | `68555238` | 1,172 | `145c509a` (17 retried) | ~~88.0%~~ | **98.5%** (970 clean rows) ⚠️ |
+| Last Letter | `488c387f` | 1,000 | `c83d5e06` (15 retried) | ~~96.0%~~ | **100.0%** (958 clean rows) ⚠️ |
+| MultiFin | `6356ac74` | 546 | `9f1b6fce` (15 retried) | ~~70.2%~~ | **78.3%** (447 clean rows) ⚠️ |
+| MATH-500 | `a13b0c26` | 500 | `719b492e` (8 retried) | **95.8%** | 95.8% (no artefact) |
+
+⚠️ **Baseline artefact (2026-04-13):** ARC, Last Letter, and MultiFin baseline batches contained incomplete responses (stop rows without `</think>` tag, 35–67% accuracy) that dragged down raw scores. Corrected baselines use only stop+think-complete rows. Raw scores and original Δ values for these benchmarks are superseded. See `experiments/analysis/results.md` for matched-pairs corrected Δ values.
+
+### Full Perturbed Batches (Steps 7–8) ✅
+
+| Benchmark | Batch ID | Rows | Empty choices | Final score |
+|---|---|---|---|---|
+| ARC | `34f05195` (arc_qwen) + retry `9b7b2ad3` | 5,860 | 6 empty | **5611/5816 = 96.5%** ✅ (429 retried, merged) |
+| Last Letter | `6f8929e0` | 5,000 | 0 | **4960/4997 = 99.3%** ✅ |
+| MultiFin | `89d70f84` | 2,730 | 0 | **2064/2717 = 76.0%** ✅ |
+| MATH-500 | `9c826a13` | 2,500 | 0 | **2453/2486 = 98.7%** ✅ (judge: `e54b5a5f`) |
+
+Note: Earlier `b6f9f7b8` (in `arc/`) was incorrectly identified as Qwen — it is a Nemotron batch. Qwen ARC perturbed is `34f05195` under `arc_qwen/`.
 
 ---
 

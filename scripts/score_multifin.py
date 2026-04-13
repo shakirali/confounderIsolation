@@ -45,11 +45,23 @@ JSON_ANSWER_RE = re.compile(r'"answer"\s*:\s*"([A-Fa-f])"', re.IGNORECASE)
 JSON_TYPES = {"p1_format", "p1_format_soft"}
 
 
+def strip_thinking(content: str) -> str:
+    """Strip Qwen-style <think>...</think> reasoning block, return text after it."""
+    if "</think>" in content:
+        return content.split("</think>", 1)[1].strip()
+    if "Thinking Process:" in content:
+        parts = content.rsplit("\n\n", 1)
+        if len(parts) == 2:
+            return parts[1].strip()
+    return content
+
+
 def extract_letter(content: str, perturbation_type: str) -> str:
     """Extract predicted letter (A–F) from model response."""
     content = content.strip()
     if not content:
         return ""
+    content = strip_thinking(content)
 
     if perturbation_type in JSON_TYPES:
         m = JSON_ANSWER_RE.search(content)
@@ -86,9 +98,14 @@ def load_output(output_jsonl: str) -> dict[int, dict]:
         for line in f:
             rec = json.loads(line)
             cid = int(rec["custom_id"])
-            msg = rec["response"]["body"]["choices"][0]["message"]
-            content = (msg.get("content") or "").strip()
-            finish = rec["response"]["body"]["choices"][0]["finish_reason"]
+            choices = rec.get("response", {}).get("body", {}).get("choices", [])
+            if choices:
+                msg = choices[0].get("message", {})
+                content = (msg.get("content") or "").strip()
+                finish = choices[0].get("finish_reason")
+            else:
+                content = ""
+                finish = "error"
             records[cid] = {"content": content, "finish_reason": finish}
     return records
 
